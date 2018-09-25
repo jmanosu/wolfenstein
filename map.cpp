@@ -66,39 +66,50 @@ void Map::twoDRender(SDL_Renderer * renderer, int startx, int starty, int dsize)
 
 void Map::threeDRender(SDL_Renderer * renderer, Player * player, int startx, int starty, int rwidth, int rheight)
 {
-  int separation = 5;
+  int separation = 1;
   double dfov = player->get_fov();
-  double sstep = rwidth / dfov * separation;
-  double dstep = 5;
+  int sstep = ceil(rwidth / dfov * separation);
+  double dstep = separation;
+  double currentX = 0;
   double dcurrent = 0;
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
   while(dfov > dcurrent){
-    std::tuple<int, int, Wall> hit = calcWDistance(player->get_xpos(), player->get_ypos(), dcurrent,  renderer);
+    std::tuple<double, double, Wall> hit = calcWDistance(player->get_xpos(), player->get_ypos(), dcurrent,  renderer);
     double hitx = std::get<0>(hit);
     double hity = std::get<1>(hit);
-    double distance = sqrt(pow(hitx, 2.0)+ pow(hity, 2.0));
-    
-    //SDL_RenderDrawLine(renderer, ;
+    double distance = sqrt(pow(hitx, 2.0)+ pow(hity, 2.0)) * cos(((dfov / 2) - dcurrent) * M_PI / 180);
+    double angle =  atan(3/distance);
+    double heightw = tan(angle) / (M_PI/4) * rheight;
+    //std::cout << " distance " << distance << std::endl;
+    SDL_Rect temp;
+    temp.x = currentX;
+    temp.y = (rheight / 2) - heightw;
+    temp.w = sstep;
+    temp.h = heightw * 2;
+    SDL_SetRenderDrawColor(renderer, 100, 0, 0, 100 * distance / 20);
+    SDL_RenderFillRect(renderer, &temp);
+    currentX += sstep;
     dcurrent += dstep;
   }
 }
 
-std::tuple<int, int, Wall> Map::calcWDistance(int x, int y, double degree, SDL_Renderer * renderer)
+std::tuple<double, double, Wall> Map::calcWDistance(int x, int y, double degree, SDL_Renderer * renderer)
 {
   degree = ceil(degree);
   bool end = false;
   double radian = (degree * M_PI) / 180.00;
 
   double c = cos(radian);
-  int currentX = -(x % bsize);
-  int xadjust = -1;
+  double currentX = -(x % bsize);
+  double xadjust = -1;
   if(c > 0){
     currentX = bsize - (x % bsize);
     xadjust = 0;
   }
 
   double s = sin(radian);
-  int currentY = -(y % bsize);
-  int yadjust = -1;
+  double currentY = -(y % bsize);
+  double yadjust = -1;
   if(s > 0){
     currentY = bsize - (y % bsize);
     yadjust = 0;
@@ -116,10 +127,10 @@ std::tuple<int, int, Wall> Map::calcWDistance(int x, int y, double degree, SDL_R
     if((currentX + x) < (width * bsize) && (currentX + x) > 0 && ((int)(degree) % 90) != 0){
       foundY = currentX * tan(radian);
       if(foundY + y > 0 && foundY + y < height * bsize){
-        SDL_SetRenderDrawColor(renderer, 100, degree, degree, 0);
-        SDL_RenderDrawPoint(renderer, x + currentX, y + foundY);
-        Wall temp = floors[0][(int)(y + foundY) / bsize][(x + currentX) / bsize + xadjust];
-        SDL_SetRenderDrawColor(renderer, 250, 0, 200, 0);
+        //SDL_SetRenderDrawColor(renderer, 100, degree, degree, 0);
+        //SDL_RenderDrawPoint(renderer, x + currentX, y + foundY);
+        Wall temp = floors[0][(int)((y + foundY) / bsize)][(int)((x + currentX) / bsize + xadjust)];
+        //SDL_SetRenderDrawColor(renderer, 250, 0, 200, 0);
         if(true){
           closestX = currentX;
           closestY = foundY;
@@ -137,9 +148,9 @@ std::tuple<int, int, Wall> Map::calcWDistance(int x, int y, double degree, SDL_R
     if((currentY + y) < (height * bsize) && (currentY + y) > 0 && ((int)(degree) % 180) != 0){
       foundX = currentY / tan(radian);
       if(foundX + x > 0 && foundX + x < width * bsize){
-        SDL_SetRenderDrawColor(renderer, 0, 0, 200, 0);
-        SDL_RenderDrawPoint(renderer, x + foundX, y + currentY);
-        Wall temp = floors[0][(y + currentY) / bsize + yadjust][(int)(x + foundX) / bsize];
+        //SDL_SetRenderDrawColor(renderer, 0, 0, 200, 0);
+        //SDL_RenderDrawPoint(renderer, x + foundX, y + currentY);
+        Wall temp = floors[0][(int)((y + currentY) / bsize + yadjust)][(int)((x + foundX) / bsize)];
         if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(foundX,2.0) + pow(currentY,2.0))){
           closestX = foundX;
           closestY = currentY;
@@ -152,7 +163,7 @@ std::tuple<int, int, Wall> Map::calcWDistance(int x, int y, double degree, SDL_R
     currentX += bsize;
     currentY += bsize;
     Wall temp;
-    std::tuple<int, int, Wall> foo (closestX, closestY, temp);
+    std::tuple<double, double, Wall> foo (closestX, closestY, temp);
     return foo;
 }
 

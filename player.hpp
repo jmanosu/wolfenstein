@@ -9,7 +9,7 @@ class Player{
   public:
     Player();
     ~Player();
-    void init(int = 0, int = 0, double = 2.0, double = 360, double = 0);
+    void init(int = 0, int = 0, double = 2.0, double = 60, double = 0);
     void twoDRender(SDL_Renderer *);
     int get_xpos();
     int get_ypos();
