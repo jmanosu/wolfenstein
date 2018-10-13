@@ -31,6 +31,11 @@ double Player::get_fov()
   return fov;
 }
 
+double Player::get_los()
+{
+  return los;
+}
+
 void Player::moveForward()
 {
 

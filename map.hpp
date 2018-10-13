@@ -18,7 +18,7 @@ class Map{
     std::tuple<double, double, Wall> calcWDistance(int, int, double, SDL_Renderer *);
     void defaultMap(int, int);
   private:
-    int height, width, bsize, nfloors;
+    int length, width, bsize, nfloors;
     Wall *** floors;
 };
 

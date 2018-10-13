@@ -1,55 +1,85 @@
+/*
+File: map.cpp
+Author: Jared Tence
+Last Edit: 9/27/2018
+
+Description: The Map class contains a three dimensional array of Wall objects
+  in a dynamically allocated array. This map can be rendered in a 2-d format
+  where the walls are draw as a grid system. The other option is a 3-d render
+  where the walls are draw using a technique called ray casting.
+
+  Ray Casting Link: https://en.wikipedia.org/wiki/Ray_casting
+
+*/
+
 #ifndef Map_cpp
 #define Map_cpp
 
 #include "map.hpp"
 
+// constructor for Map object
 Map::Map()
 {
+  //nfloors repesents the number of levels the map has
   nfloors = 0;
+  //width is the width of the map
   width = 0;
-  height = 0;
+  //length is the length of the map
+  length = 0;
+  //bsize repesents a single side length of the square walls
   bsize = 0;
+  //floors stores all the wall objects
   floors = NULL;
 }
 
+//simple destructor, delets all dynamically allocated variables
 Map::~Map()
 {
   for(int i = 0; i < nfloors; i++){
-    for(int j = 0; j < height; j++){
+    for(int j = 0; j < length; j++){
       delete[] floors[i][j];
     }
     delete[] floors[i];
   }
 }
 
-void Map::init(Wall *** floors, int width, int height, int bsize, int nfloors)
+//basic initalizer method with default parameters (see map.hpp)
+void Map::init(Wall *** floors, int width, int length, int bsize, int nfloors)
 {
   this->floors = floors;
   this->width = width;
-  this->height = height;
+  this->length = length;
   this->bsize = bsize;
   this->nfloors = nfloors;
 }
 
-void Map::defaultMap(int width, int height){
+//generates a default map with a single floor for tests
+void Map::defaultMap(int width, int length){
+  //construction of floors pointer so it points to an area in the heap
   floors = new Wall**[1];
-  floors[0] = new Wall*[height];
+  floors[0] = new Wall*[length];
+
+  //temparary wall that will be loaded into wall location on each floor
   Wall temp;
-  for(int i = 0; i < height; i++){
+  for(int i = 0; i < length; i++){
     floors[0][i] = new Wall[width];
     for(int j = 0; j < width; j++){
+      //initalizes the wall object to have a cascading color
       temp.init(j*i, j*i, j*i);
+      //sets floors pointer to wall temp
       floors[0][i][j] = temp;
     }
   }
+
+  //changes other variables to refelct new floors compostion
   this->width = width;
-  this->height = height;
+  this->length = length;
   this->bsize = 20;
   this->nfloors = 1;
 }
 
 void Map::twoDRender(SDL_Renderer * renderer, int startx, int starty, int dsize){
-  for(int i = 0; i < height; i++){
+  for(int i = 0; i < length; i++){
     for(int j = 0; j < width; j++){
       Wall tempw = floors[0][i][j];
       SDL_Rect temp;
@@ -68,19 +98,20 @@ void Map::threeDRender(SDL_Renderer * renderer, Player * player, int startx, int
 {
   int separation = 1;
   double dfov = player->get_fov();
+  double dlos = player->get_los();
   int sstep = ceil(rwidth / dfov * separation);
   double dstep = separation;
   double currentX = 0;
-  double dcurrent = 0;
+  double dcurrent = dlos - dfov / 2;
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-  while(dfov > dcurrent){
+  while(dlos + dfov / 2 > dcurrent){
     std::tuple<double, double, Wall> hit = calcWDistance(player->get_xpos(), player->get_ypos(), dcurrent,  renderer);
     double hitx = std::get<0>(hit);
     double hity = std::get<1>(hit);
-    double distance = sqrt(pow(hitx, 2.0)+ pow(hity, 2.0)) * cos(((dfov / 2) - dcurrent) * M_PI / 180);
+    double distance = sqrt(pow(hitx, 2.0)+ pow(hity, 2.0)) * cos((dlos - dcurrent) * M_PI / 180);
     double angle =  atan(3/distance);
     double heightw = tan(angle) / (M_PI/4) * rheight;
-    //std::cout << " distance " << distance << std::endl;
+
     SDL_Rect temp;
     temp.x = currentX;
     temp.y = (rheight / 2) - heightw;
@@ -115,49 +146,36 @@ std::tuple<double, double, Wall> Map::calcWDistance(int x, int y, double degree,
     yadjust = 0;
   }
 
-  double closestX = -1;
-  double closestY = -1;
+  double closestX = 1000000;
+  double closestY = 1000000;
 
   currentX = round(currentX);
   currentY = round(currentY);
 
-  double foundY = bsize * height;
+  double foundY = bsize * length;
   double foundX = bsize * width;
   //while(!end){
-    if((currentX + x) < (width * bsize) && (currentX + x) > 0 && ((int)(degree) % 90) != 0){
+    if((currentX + x) < (width * bsize) && (currentX + x) > 0){
       foundY = currentX * tan(radian);
-      if(foundY + y > 0 && foundY + y < height * bsize){
-        //SDL_SetRenderDrawColor(renderer, 100, degree, degree, 0);
-        //SDL_RenderDrawPoint(renderer, x + currentX, y + foundY);
+      if(foundY + y > 0 && foundY + y < length * bsize){
         Wall temp = floors[0][(int)((y + foundY) / bsize)][(int)((x + currentX) / bsize + xadjust)];
-        //SDL_SetRenderDrawColor(renderer, 250, 0, 200, 0);
-        if(true){
+        if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(currentX,2.0) + pow(foundY,2.0))){
           closestX = currentX;
           closestY = foundY;
         }
       }else{
-        /*SDL_RenderDrawPoint(renderer, x + currentX, y + foundY);
-        std::cout << "degree " << degree << std::endl;
-        std::cout << "foundY " << foundY << std::endl;
-        std::cout << "yadjust " << yadjust << std::endl;
-        std::cout << (foundY + y > 0 - yadjust * bsize) << std::endl;
-        std::cout << (foundY + y < height * bsize) << std::endl;*/
       }
     }
 
-    if((currentY + y) < (height * bsize) && (currentY + y) > 0 && ((int)(degree) % 180) != 0){
+    if((currentY + y) < (length * bsize) && (currentY + y) > 0){
       foundX = currentY / tan(radian);
       if(foundX + x > 0 && foundX + x < width * bsize){
-        //SDL_SetRenderDrawColor(renderer, 0, 0, 200, 0);
-        //SDL_RenderDrawPoint(renderer, x + foundX, y + currentY);
         Wall temp = floors[0][(int)((y + currentY) / bsize + yadjust)][(int)((x + foundX) / bsize)];
         if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(foundX,2.0) + pow(currentY,2.0))){
           closestX = foundX;
           closestY = currentY;
         }
       }else{
-        /*SDL_SetRenderDrawColor(renderer, 250, 0, 200, 0);
-        SDL_RenderDrawPoint(renderer, x + foundX, y + currentY);*/
       }
     }
     currentX += bsize;
