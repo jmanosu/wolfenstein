@@ -1,7 +1,21 @@
+/*
+File: main.cpp
+Author: Jared Tence
+Last Edit: 10/13/2018
+
+Description: main.cpp creates a game object. Renders it until the isRunning
+  bool in game is set to false causing the while loop to end and the game cleaning
+  itself
+*/
+
 #include <SDL2/SDL.h>
 #include "game.hpp"
 #include <iostream>
 //g++ main.cpp game.cpp map.cpp wall.cpp player.cpp -I/home/jmanosu/dev/SDL/x86_64-w64-mingw32/bin/ -l SDL2 -std=c++11
+
+//g++ main.cpp game.cpp map.cpp wall.cpp player.cpp -std=c++11
+
+
 
 // Defining screen attributes:
 const int sc_width  = 640; // Width

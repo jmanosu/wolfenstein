@@ -1,3 +1,12 @@
+/*
+File: player.cpp
+Author: Jared Tence
+Last Edit: 10/13/2018
+
+Description: 
+
+*/
+
 #ifndef player_cpp
 #define player_cpp
 

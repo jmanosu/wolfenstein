@@ -1,7 +1,7 @@
 /*
 File: map.cpp
 Author: Jared Tence
-Last Edit: 9/27/2018
+Last Edit: 10/13/2018
 
 Description: The Map class contains a three dimensional array of Wall objects
   in a dynamically allocated array. This map can be rendered in a 2-d format
@@ -78,49 +78,72 @@ void Map::defaultMap(int width, int length){
   this->nfloors = 1;
 }
 
+
+//twoDRender option for the map which displays it as a grid
 void Map::twoDRender(SDL_Renderer * renderer, int startx, int starty, int dsize){
+  //double for loop to access each elemenet of the floors array
   for(int i = 0; i < length; i++){
     for(int j = 0; j < width; j++){
+      //sets a temp varable to the current index
       Wall tempw = floors[0][i][j];
+      //creates a SDL rectangle used for the SDL display
       SDL_Rect temp;
       temp.x = startx + j * dsize;
       temp.y = starty + i * dsize;
       temp.w = dsize;
       temp.h = dsize;
+
+      //sets render color to wall color
       SDL_SetRenderDrawColor(renderer, tempw.get_color().r, tempw.get_color().g, tempw.get_color().b, 0);
+      //draws rectangle
       SDL_RenderFillRect(renderer, &temp);
     }
   }
+  //resets rendercolor to white
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 }
 
+//threeDRender option for map which displays map in 3D using raycasting
 void Map::threeDRender(SDL_Renderer * renderer, Player * player, int startx, int starty, int rwidth, int rheight)
 {
+  //defines the amount we increase our current degree by
   int separation = 1;
+  //gets players field of view in degrees
   double dfov = player->get_fov();
+  //gets players line of sight in degrees
   double dlos = player->get_los();
+  //caculates the amount of pixels the screen needs to move for every slice render
   int sstep = ceil(rwidth / dfov * separation);
-  double dstep = separation;
+  //current X and Y position on the screen that the renderer is drawing at
   double currentX = 0;
+  //current degree which is set to the degree at the vary right of the feild of vision.
   double dcurrent = dlos - dfov / 2;
+  //sets renderer to allow opacity to add depth to the map
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
   while(dlos + dfov / 2 > dcurrent){
+    //caculates the distance from the player to the nearest wall at a certain degree
     std::tuple<double, double, Wall> hit = calcWDistance(player->get_xpos(), player->get_ypos(), dcurrent,  renderer);
+    //pulls data from the output of calcWDistance and formats it for later use
     double hitx = std::get<0>(hit);
     double hity = std::get<1>(hit);
+    Wall wtemp  = std::get<2>(hit);
     double distance = sqrt(pow(hitx, 2.0)+ pow(hity, 2.0)) * cos((dlos - dcurrent) * M_PI / 180);
     double angle =  atan(3/distance);
     double heightw = tan(angle) / (M_PI/4) * rheight;
-
+    //creates temp rectangle to draw
     SDL_Rect temp;
     temp.x = currentX;
     temp.y = (rheight / 2) - heightw;
     temp.w = sstep;
     temp.h = heightw * 2;
+    //sets render color to the nearest wall
     SDL_SetRenderDrawColor(renderer, 100, 0, 0, 100 * distance / 20);
+    //draws rectangle
     SDL_RenderFillRect(renderer, &temp);
+    //increase currentX by the screen step and dcurrent by seperation
     currentX += sstep;
-    dcurrent += dstep;
+    dcurrent += separation;
   }
 }
 
