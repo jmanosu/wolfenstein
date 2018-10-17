@@ -117,11 +117,11 @@ void Map::threeDRender(SDL_Renderer * renderer, Player * player, int startx, int
   //current X and Y position on the screen that the renderer is drawing at
   double currentX = 0;
   //current degree which is set to the degree at the vary right of the feild of vision.
-  double dcurrent = dlos - dfov / 2;
+  double dcurrent = dlos + dfov / 2;
   //sets renderer to allow opacity to add depth to the map
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-  while(dlos + dfov / 2 > dcurrent){
+  while(dlos - dfov / 2 < dcurrent){
     //caculates the distance from the player to the nearest wall at a certain degree
     std::tuple<double, double, Wall> hit = calcWDistance(player->get_xpos(), player->get_ypos(), dcurrent,  renderer);
     //pulls data from the output of calcWDistance and formats it for later use
@@ -143,7 +143,7 @@ void Map::threeDRender(SDL_Renderer * renderer, Player * player, int startx, int
     SDL_RenderFillRect(renderer, &temp);
     //increase currentX by the screen step and dcurrent by seperation
     currentX += sstep;
-    dcurrent += separation;
+    dcurrent -= separation;
   }
 }
 

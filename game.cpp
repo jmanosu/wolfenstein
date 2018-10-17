@@ -85,18 +85,35 @@ void Game::handleEvents(){
   SDL_Event event;
   //polls the event handler and sets event to the top of the event stack
   SDL_PollEvent(&event);
-
   switch (event.type) {
     //if close button is clicked the render is set to terminate
     case SDL_QUIT:
       isRunning = false;
       break;
+    case SDL_KEYDOWN:
+      switch( event.key.keysym.sym ){
+                        case SDLK_LEFT:
+                            player->moveLeft();
+                            break;
+                        case SDLK_RIGHT:
+                            player->moveRight();
+                            break;
+                        case SDLK_UP:
+                            player->moveForward();
+                            break;
+                        case SDLK_DOWN:
+                            player->moveBackward();
+                            break;
+                        default:
+                            break;
+                    }
+        break;
     default:
       break;
   }
 }
 
-//clears render and renders the map
+//clears renderer and renderers the map
 void Game::render(){
   SDL_RenderClear(renderer);
   map->twoDRender(renderer, 0, 0,20);

@@ -62,12 +62,18 @@ void Player::moveBackward(){
 
 void Player::moveLeft()
 {
-
+  this->los += 8;
+  if(this->los > 360){
+    this->los -= 360;
+  }
 }
 
 void Player::moveRight()
 {
-
+  this->los -= 8;
+  if(this->los < 0){
+    this->los += 360;
+  }
 }
 
 //renders the player with it's feild of vision.
