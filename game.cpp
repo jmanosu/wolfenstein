@@ -94,9 +94,11 @@ void Game::handleEvents(){
       switch( event.key.keysym.sym ){
                         case SDLK_LEFT:
                             player->moveLeft();
+                            std::cout << player->get_los() << std::endl;
                             break;
                         case SDLK_RIGHT:
                             player->moveRight();
+                            std::cout << player->get_los() << std::endl;
                             break;
                         case SDLK_UP:
                             player->moveForward();
@@ -116,9 +118,8 @@ void Game::handleEvents(){
 //clears renderer and renderers the map
 void Game::render(){
   SDL_RenderClear(renderer);
-  map->twoDRender(renderer, 0, 0,20);
   map->threeDRender(renderer, player);
-  player->twoDRender(renderer);
+  map->twoDRender(renderer, 0, 0,20);
   SDL_RenderPresent(renderer);
 }
 

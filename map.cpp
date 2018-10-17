@@ -65,7 +65,15 @@ void Map::defaultMap(int width, int length){
     floors[0][i] = new Wall[width];
     for(int j = 0; j < width; j++){
       //initalizes the wall object to have a cascading color
-      temp.init(j*i, j*i, j*i);
+      if(i == 1 && j == 2 || i == 1 && j == 1){
+          temp.init(250, j*i, j*i, true);
+      }else if(i == 2 && j == 2){
+          temp.init(250, j*i, j*i, true);
+      }else if(i == 2 && j == 1){
+          temp.init(250, j*i, j*i, true);
+      } else {
+      temp.init(j*i, j*i, j*i, false);
+      }
       //sets floors pointer to wall temp
       floors[0][i][j] = temp;
     }
@@ -94,13 +102,13 @@ void Map::twoDRender(SDL_Renderer * renderer, int startx, int starty, int dsize)
       temp.h = dsize;
 
       //sets render color to wall color
-      SDL_SetRenderDrawColor(renderer, tempw.get_color().r, tempw.get_color().g, tempw.get_color().b, 0);
+      SDL_SetRenderDrawColor(renderer, tempw.get_color().r, tempw.get_color().g, tempw.get_color().b, 100);
       //draws rectangle
       SDL_RenderFillRect(renderer, &temp);
     }
   }
   //resets rendercolor to white
-  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 100);
 }
 
 //threeDRender option for map which displays map in 3D using raycasting
@@ -145,6 +153,7 @@ void Map::threeDRender(SDL_Renderer * renderer, Player * player, int startx, int
     currentX += sstep;
     dcurrent -= separation;
   }
+  player->twoDRender(renderer);
 }
 
 
@@ -205,7 +214,7 @@ std::tuple<double, double, Wall> Map::calcWDistance(int x, int y, double degree,
         //get's the wall at the current position
         Wall temp = floors[0][(int)((y + foundY) / bsize)][(int)((x + currentX) / bsize + xadjust)];
         //checks if the closestX and closestY are less then the new found X and Y
-        if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(currentX,2.0) + pow(foundY,2.0))){
+        if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(currentX,2.0) + pow(foundY,2.0)) && !temp.get_isFloor()){
           //sets closestX and closestY
           closestX = currentX;
           closestY = foundY;
@@ -221,7 +230,7 @@ std::tuple<double, double, Wall> Map::calcWDistance(int x, int y, double degree,
       foundX = currentY / tan(radian);
       if(foundX + x > 0 && foundX + x < width * bsize){
         Wall temp = floors[0][(int)((y + currentY) / bsize + yadjust)][(int)((x + foundX) / bsize)];
-        if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(foundX,2.0) + pow(currentY,2.0))){
+        if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(foundX,2.0) + pow(currentY,2.0)) && !temp.get_isFloor()){
           closestX = foundX;
           closestY = currentY;
           closestW = temp;

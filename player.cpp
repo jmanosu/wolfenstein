@@ -80,16 +80,16 @@ void Player::moveRight()
 //used for debugging
 void Player::twoDRender(SDL_Renderer * renderer)
 {
-  SDL_SetRenderDrawColor(renderer, 250, 100, 100, 0);
-  double radian = fov * M_PI / 180;
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+  double radian = (los-fov/2) * M_PI / 180;
   double c = cos(radian);
   double s = sin(radian);
   SDL_RenderDrawLine(renderer, xpos, ypos, xpos + (c * 30), ypos + (s * 30));
-  radian = 0;
+  radian = (los+fov/2) * M_PI / 180;
   c = cos(radian);
   s = sin(radian);
   SDL_RenderDrawLine(renderer, xpos, ypos, xpos + (c * 30), ypos + (s * 30));
-  SDL_SetRenderDrawColor(renderer, 250, 100, 250, 0);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
   SDL_RenderDrawPoint(renderer, xpos, ypos);
 }
 
