@@ -23,6 +23,7 @@ Game::Game(){}
 Game::~Game(){
   delete map;
   delete player;
+}
 
 //initalizer initalizes the SDL graphic display and objects like the Map and Player
 void Game::init(const char * title, int xpos, int ypos, int width, int height, bool fullscreen)

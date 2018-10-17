@@ -3,8 +3,7 @@ File: player.cpp
 Author: Jared Tence
 Last Edit: 10/13/2018
 
-Description: 
-
+Description: Player object that holds the values and functions of the player
 */
 
 #ifndef player_cpp
@@ -12,10 +11,13 @@ Description:
 
 #include "player.hpp"
 
+//constructor for player
 Player::Player(){}
 
+//destructor for player
 Player::~Player(){}
 
+//initalizer for player
 void Player::init(int xpos, int ypos, double speed, double fov, double los)
 {
   this->xpos  = xpos;
@@ -25,21 +27,25 @@ void Player::init(int xpos, int ypos, double speed, double fov, double los)
   this->los   = los;
 }
 
+//accessor for x position
 int Player::get_xpos()
 {
   return xpos;
 }
 
+//accessor for y position
 int Player::get_ypos()
 {
   return ypos;
 }
 
+//accessor for feild of vision
 double Player::get_fov()
 {
   return fov;
 }
 
+//accessor for line of sight
 double Player::get_los()
 {
   return los;
@@ -64,6 +70,8 @@ void Player::moveRight()
 
 }
 
+//renders the player with it's feild of vision.
+//used for debugging
 void Player::twoDRender(SDL_Renderer * renderer)
 {
   SDL_SetRenderDrawColor(renderer, 250, 100, 100, 0);

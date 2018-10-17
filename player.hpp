@@ -1,3 +1,11 @@
+/*
+File: player.cpp
+Author: Jared Tence
+Last Edit: 10/13/2018
+
+Description: Player object header file
+*/
+
 #ifndef player_hpp
 #define player_hpp
 
@@ -20,9 +28,12 @@ class Player{
     void moveLeft();
     void moveRight();
   private:
+    //x and y position variables
     int xpos;
     int ypos;
+    //speed of walking of the player
     double speed;
+    //fov = feild of vision and los = line of sight
     double fov;
     double los;
 };

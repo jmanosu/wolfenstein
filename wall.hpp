@@ -1,3 +1,10 @@
+/*
+File: wall.hp
+Author: Jared Tence
+Last Edit: 10/13/2018
+
+Description: header function for wallc
+*/
 #ifndef wall_hpp
 #define wall_hpp
 
@@ -13,12 +20,13 @@ class Wall{
   public:
     Wall();
     ~Wall();
-    void init(Color);
-    void init(int, int, int);
+    void init(Color, bool=true);
+    void init(int, int, int, bool=true);
     Color get_color();
+    bool get_isFloor();
   private:
     Color wallc;
-    bool floor;
+    bool isFloor;
 };
 
 #endif

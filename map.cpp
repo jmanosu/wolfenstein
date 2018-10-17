@@ -147,20 +147,28 @@ void Map::threeDRender(SDL_Renderer * renderer, Player * player, int startx, int
   }
 }
 
+
+//caculates the distance between a point and the nearest wall at a certain degree
 std::tuple<double, double, Wall> Map::calcWDistance(int x, int y, double degree, SDL_Renderer * renderer)
 {
-  degree = ceil(degree);
   bool end = false;
+  //gets radian equivalent of degree
   double radian = (degree * M_PI) / 180.00;
 
+  //caculates the cosine of the angle
   double c = cos(radian);
+  //currentX is the distance from the point to the closest wall on the x axis
   double currentX = -(x % bsize);
+  //xadjust tweks the x index of the wall array to the correct wall
   double xadjust = -1;
+  //the angle changes which closestX i.e if degree < 90 then we want cloest wall
+  //to the right but if degree > 90 we want closest wall to the left
   if(c > 0){
     currentX = bsize - (x % bsize);
     xadjust = 0;
   }
 
+  //copy of 158 to 169 for y
   double s = sin(radian);
   double currentY = -(y % bsize);
   double yadjust = -1;
@@ -169,43 +177,78 @@ std::tuple<double, double, Wall> Map::calcWDistance(int x, int y, double degree,
     yadjust = 0;
   }
 
+  //setting closestX and closestY which will hold our closest wall hit
   double closestX = 1000000;
   double closestY = 1000000;
 
-  currentX = round(currentX);
-  currentY = round(currentY);
-
+  //cacultes the Y and X values for currentX and currentY
   double foundY = bsize * length;
   double foundX = bsize * width;
-  //while(!end){
-    if((currentX + x) < (width * bsize) && (currentX + x) > 0){
+
+  //sets continue bools to ture
+  bool currentXcont = true;
+  bool currentYcont = true;
+
+  //closest wall to the point at the given degree
+  Wall closestW;
+
+  //as long as the shortest distance hasn't been found continue
+  //will exit even if there doesn't exist a wall in the inputted direction
+  while(currentXcont || currentYcont){
+
+    //checks if the currentX exceeds the boundries of the map
+    if((currentX + x) < (width * bsize) && (currentX + x) > 0  && currentXcont){
+      //finds the Y position on the line created by the degree and current
       foundY = currentX * tan(radian);
+      //checks if the foundY exceeds the boundries of the map
       if(foundY + y > 0 && foundY + y < length * bsize){
+        //get's the wall at the current position
         Wall temp = floors[0][(int)((y + foundY) / bsize)][(int)((x + currentX) / bsize + xadjust)];
+        //checks if the closestX and closestY are less then the new found X and Y
         if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(currentX,2.0) + pow(foundY,2.0))){
+          //sets closestX and closestY
           closestX = currentX;
           closestY = foundY;
+          closestW = temp;
+          currentXcont = false;
         }
-      }else{
-      }
-    }
+      }else{ currentXcont = false; }
+    }else{ currentXcont = false; }
 
-    if((currentY + y) < (length * bsize) && (currentY + y) > 0){
+
+    //duplicate of lines 197 to  216 execpt using foundY instead of foundX
+    if((currentY + y) < (length * bsize) && (currentY + y) > 0 && currentYcont){
       foundX = currentY / tan(radian);
       if(foundX + x > 0 && foundX + x < width * bsize){
         Wall temp = floors[0][(int)((y + currentY) / bsize + yadjust)][(int)((x + foundX) / bsize)];
         if(sqrt(pow(closestX,2.0) + pow(closestY,2.0)) > sqrt(pow(foundX,2.0) + pow(currentY,2.0))){
           closestX = foundX;
           closestY = currentY;
+          closestW = temp;
+          currentYcont = false;
         }
-      }else{
-      }
+      }else{ currentYcont = false; }
+    }else{ currentYcont = false; }
+
+
+    //adds a bsize to caculate the next shortest distance
+    if(xadjust){
+      currentX -= bsize;
+    }else{
+      currentX += bsize;
     }
-    currentX += bsize;
-    currentY += bsize;
-    Wall temp;
-    std::tuple<double, double, Wall> foo (closestX, closestY, temp);
-    return foo;
+
+    if(yadjust){
+      currentY -= bsize;
+    }else{
+      currentY += bsize;
+    }
+  }
+
+  //creates a tuple of final values that we will return
+  std::tuple<double, double, Wall> foo (closestX, closestY, closestW);
+
+  return foo;
 }
 
 #endif
