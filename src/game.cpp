@@ -69,12 +69,10 @@ void Game::init(const char * title, int xpos, int ypos, int width, int height, b
 
     //creates map and Player variables
     map = new Map();
-    map->defaultMap(15,15);
 
-    player = new Player();
-    player->init(30,30);
   }else{
     isRunning = false;
+    std::cout << SDL_GetError() << std::endl;
     std::cout << "ERROR failed to initalize" << std::endl;
   }
 }
@@ -85,6 +83,7 @@ void Game::handleEvents(){
   SDL_Event event;
   //polls the event handler and sets event to the top of the event stack
   SDL_PollEvent(&event);
+  map->handleClick(event);
   switch (event.type) {
     //if close button is clicked the render is set to terminate
     case SDL_QUIT:
@@ -92,24 +91,19 @@ void Game::handleEvents(){
       break;
     case SDL_KEYDOWN:
       switch( event.key.keysym.sym ){
-                        case SDLK_LEFT:
-                            player->moveLeft();
-                            std::cout << player->get_los() << std::endl;
-                            break;
-                        case SDLK_RIGHT:
-                            player->moveRight();
-                            std::cout << player->get_los() << std::endl;
-                            break;
-                        case SDLK_UP:
-                            player->moveForward();
-                            break;
-                        case SDLK_DOWN:
-                            player->moveBackward();
-                            break;
-                        default:
-                            break;
-                    }
+          default:
+            break;
+        }
         break;
+    case SDL_MOUSEBUTTONDOWN:
+      switch ( event.button.button ){
+      case SDL_BUTTON_LEFT:
+        break;
+      case SDL_BUTTON_RIGHT:
+        break;
+      default:
+        break;
+      }
     default:
       break;
   }
@@ -118,8 +112,7 @@ void Game::handleEvents(){
 //clears renderer and renderers the map
 void Game::render(){
   SDL_RenderClear(renderer);
-  map->threeDRender(renderer, player);
-  map->twoDRender(renderer, 0, 0,20);
+  map->render(renderer);
   SDL_RenderPresent(renderer);
 }
 
