@@ -55,6 +55,8 @@ void Hex::init(double x, double y, double z, int degree, int r, int g, int b, do
 
 void Hex::draw(SDL_Renderer * renderer, double displaceX, double displaceY, double size)
 {
+  Texture temp("hexagonTemplate2.png");
+  temp.render();
   int hexWidth  = 2 * cos(30*PI/180)*size;
   int hexHeight = (6* size)/4;
   

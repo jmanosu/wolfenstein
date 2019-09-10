@@ -5,26 +5,26 @@ Last Edit: 10/13/2018
 
 Description: header function for assetManager.hpp
 */
+#ifndef ASSETMANAGER
+#define ASSETMANAGER
 
 #include <iostream>
 #include <map>
 #include <SDL2/SDL.h>
 
-#ifndef ASSETMANAGER
-#define ASSETMANAGER
+#include "graphics.hpp"
 
 class assetManager{
     public:
         static assetManager * instance();
-        static SDL_Texture * getTexture(std::string);
-        static void loadTexture(std::string);
         static void release();
+        SDL_Texture * getTexture(std::string);
 
     private:
         assetManager();
         ~assetManager();
 
-        static std::map<std::string, SDL_Texture *> mTextures;
+        std::map<std::string, SDL_Texture *> mTextures;
         static assetManager * sInstance;
 };
 

@@ -4,7 +4,7 @@ assetManager * assetManager::sInstance = nullptr;
 
 assetManager * assetManager::instance()
 {
-    if(sInstance != nullptr){
+    if(sInstance == nullptr){
         sInstance = new assetManager();
     }
     return sInstance;
@@ -30,15 +30,15 @@ assetManager::~assetManager()
     mTextures.clear();
 }
 
-void assetManager::loadTexture(std::string fileName){
-    //IMG_LoadTexture(renderer, fileName);
-}
-
 SDL_Texture * assetManager::getTexture(std::string fileName){
     std::string fullPath = SDL_GetBasePath();
-    fullPath.append("/assets/" + fileName);
-    if(mTextures.at(fullPath) == nullptr){
-        //create static loader functions
-        mTextures[fullPath] = nullptr;
+    fullPath.append("assets/" + fileName);
+    
+    if(mTextures[fullPath] == nullptr){
+        mTextures[fullPath] = Graphics::instance()->loadTexture(fullPath);
+        if(mTextures[fullPath] == nullptr){
+            std::cout << "ERROR loading texture" << std::endl;
+        }
     }
+    return mTextures[fullPath];
 }

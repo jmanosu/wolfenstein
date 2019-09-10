@@ -13,6 +13,8 @@ Description: defenitions for the game class and functions. The Game class contai
 
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "graphics.hpp"
+#include "assetManager.hpp"
 #include "map.hpp"
 #include "player.hpp"
 
@@ -29,11 +31,11 @@ class Game{
     void handleEvents();
     bool running(){ return isRunning; }
   private:
-    bool isRunning;
-    SDL_Window * window;
-    SDL_Renderer * renderer;
+    Graphics * mGraphics;
+    assetManager * mAssetManager;
     Map * map;
     Player * player;
+    bool isRunning;
 
 };
 

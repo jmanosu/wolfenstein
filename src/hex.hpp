@@ -1,5 +1,5 @@
 /*
-File: hex.hp
+File: hex.hpp
 Author: Jared Tence
 Last Edit: 10/13/2018
 
@@ -10,11 +10,11 @@ Description: header function for Hex
 
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <vector>
 #include <tuple>
 #include <cmath>
 #include "constants.hpp"
+#include "texture.hpp"
 
 struct Color{
   int r;
