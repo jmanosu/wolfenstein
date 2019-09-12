@@ -22,7 +22,7 @@ class Graphics{
 
         void render();
         void clear();
-        void drawTexture(SDL_Texture *);
+        void drawTexture(SDL_Texture *, SDL_Rect &);
         SDL_Renderer * getRenderer();
         SDL_Texture * loadTexture(std::string);
         void printError();

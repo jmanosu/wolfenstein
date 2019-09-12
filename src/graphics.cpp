@@ -40,9 +40,8 @@ void Graphics::clear()
   SDL_RenderClear(mRenderer);
 }
 
-void Graphics::drawTexture(SDL_Texture * texture)
+void Graphics::drawTexture(SDL_Texture * texture, SDL_Rect & texr)
 {
-  SDL_Rect texr; texr.x = 100; texr.y = 100; texr.w = 200; texr.h = 200; 
   SDL_RenderCopy(mRenderer, texture, NULL, &texr);
 }
 

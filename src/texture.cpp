@@ -12,7 +12,8 @@ Texture::~Texture()
     mTexture  = nullptr;
 }
 
-void Texture::render()
+void Texture::render(int x, int y, int width, int height)
 {
-    mGraphics->drawTexture(mTexture);
+    SDL_Rect texr; texr.x = x; texr.y = y; texr.w = width; texr.h = height; 
+    mGraphics->drawTexture(mTexture, texr);
 }

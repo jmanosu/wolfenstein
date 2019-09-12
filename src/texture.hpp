@@ -18,7 +18,7 @@ class Texture{
     public:
         Texture(std::string path);
         ~Texture();
-        void render();
+        void render(int, int, int, int);
     private:
         SDL_Texture * mTexture;
         Graphics * mGraphics;

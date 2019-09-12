@@ -55,18 +55,22 @@ void Hex::init(double x, double y, double z, int degree, int r, int g, int b, do
 
 void Hex::draw(SDL_Renderer * renderer, double displaceX, double displaceY, double size)
 {
-  Texture temp("hexagonTemplate2.png");
-  temp.render();
-  int hexWidth  = 2 * cos(30*PI/180)*size;
-  int hexHeight = (6* size)/4;
-  
+  Texture temp("templateBlue1.png");
+  //int hexWidth  = 2 * cos(30*PI/180)*size;
+  //int hexHeight = (6* size)/4;
+  int hexWidth  =  2 * cos(30*PI/180) * size;
+  int hexHeight =  4 * sin(30*PI/180) * size;
+
   this->centerX = hexWidth * x + hexWidth / 2 * z + displaceX;
-  this->centerY = hexHeight * z + displaceY;
+  this->centerY = hexHeight * 3/4  * z + displaceY;
   
+  temp.render(this->centerX - hexWidth/2, this->centerY - hexHeight/2, hexWidth, hexHeight);
+
   this->size = size;
   
   SDL_SetRenderDrawColor(renderer, this->hexColor.r, this->hexColor.g, this->hexColor.b, 1);
   SDL_RenderDrawPoint(renderer, this->centerX, this->centerY);
+  SDL_RenderDrawPoint(renderer, this->centerX - hexWidth/2, this->centerY - hexHeight/2);
   
   int currentDegree = this->degree;
   
@@ -89,9 +93,9 @@ void Hex::draw(SDL_Renderer * renderer, double displaceX, double displaceY, doub
       nextX,
       nextY);
 
-      SDL_SetRenderDrawColor(renderer, 250,250,250, 1);
-        SDL_RenderDrawPoint(renderer, currentX * this->skewX , currentY * this->skewY);
-      SDL_SetRenderDrawColor(renderer, this->hexColor.r, this->hexColor.g, this->hexColor.b, 1);
+      //SDL_SetRenderDrawColor(renderer, 250,250,250, 1);
+      //  SDL_RenderDrawPoint(renderer, currentX * this->skewX , currentY * this->skewY);
+      //SDL_SetRenderDrawColor(renderer, this->hexColor.r, this->hexColor.g, this->hexColor.b, 1);
 
     currentX = nextX;
     currentY = nextY;
