@@ -15,30 +15,31 @@ Description: header function for Hex
 #include <cmath>
 #include "constants.hpp"
 #include "texture.hpp"
+#include "hexTexture.hpp"
+#include "helpfulStructs.hpp"
+#include "gameEntity.hpp"
 
-struct Color{
-  int r;
-  int g;
-  int b;
-};
-
-class Hex{
+class Hex : public GameEntity{
   public:
-    Hex();
+    Hex(int, int, int, HexTexture *);
+    //Hex(double, double, double, int, int, int, int);
     ~Hex();
-    void init(double, double, double, int, Color, double, double);
-    void init(double, double, double, int, int, int, int, double, double);
-    void draw(SDL_Renderer *, double, double, double);
+    //void draw(SDL_Renderer *, double, double, double);
+    void draw(int, int, int);
     bool checkCollision(int, int);
-    Color get_color();
+    //Color get_color();
+    int getX() { return x; }
+    int getY() { return y; }
+    int getZ() { return z; }
   private:
-    double x, y, z;
-    double skewY, skewX;
+    int x, y, z;
     int centerX, centerY;
-    int degree;
-    int size;
-    std::vector<std::tuple<int, int>> vertices;
-    Color hexColor;
+    //int degree;
+    //int size;
+    //std::vector<std::tuple<int, int>> vertices;
+    //Color hexColor;
+    //Texture * tileTexture;
+    HexTexture * hexTexture;
 };
 
 #endif

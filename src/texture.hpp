@@ -13,15 +13,26 @@ Description: Player object header file
 #include <SDL2/SDL.h>
 #include "graphics.hpp"
 #include "assetManager.hpp"
+#include "gameEntity.hpp"
 
-class Texture{
+class Texture : public GameEntity{
     public:
         Texture(std::string path);
+        Texture(std::string path, int x, int y, int width, int height);
         ~Texture();
+
+        int getHeight() { return mHeight; }
+        int getWidth() { return mWidth; }
+    
+        void update();
+        void render();
         void render(int, int, int, int);
-    private:
+    protected:
         SDL_Texture * mTexture;
         Graphics * mGraphics;
+        int mHeight, mWidth;
+        SDL_Rect mRenderRect, mClipRect;
+        bool mClipped;
 
 
 };

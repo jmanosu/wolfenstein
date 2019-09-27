@@ -19,14 +19,16 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include "player.hpp"
 #include "constants.hpp"
 #include "utl.cpp"
+#include "gameEntity.hpp"
 
-class Map{
+class Map : public GameEntity{
   public:
     Map();
     ~Map();
     void init();
-    void render(SDL_Renderer *);
-    void generateGridMap(int, int, int);
+    void render();
+    void update();
+    //void generateGridMap(int, int, int);
     void generateCubeMap(int, double);
     void setCenterXY(int, int);
     void handleClick(SDL_Event event);
@@ -34,7 +36,10 @@ class Map{
     int centerX, centerY;
     int boundX, boundY;
     eventTracker eTracker;
-    std::vector<Hex> hexs;
+    //std::vector<Hex *> hexs;
+    //std::map<int, std::map<int, std::map<int, Hex *>>> hexs;
+    std::map<int, std::map<int, Hex *>> hexs;
+    int radius;
 };
 
 #endif

@@ -40,9 +40,9 @@ void Graphics::clear()
   SDL_RenderClear(mRenderer);
 }
 
-void Graphics::drawTexture(SDL_Texture * texture, SDL_Rect & texr)
+void Graphics::drawTexture(SDL_Texture * texture, SDL_Rect & clipRect, SDL_Rect & renderRect)
 {
-  SDL_RenderCopy(mRenderer, texture, NULL, &texr);
+  SDL_RenderCopy(mRenderer, texture, &clipRect, &renderRect);
 }
 
 //private
@@ -122,4 +122,19 @@ SDL_Renderer * Graphics::getRenderer()
 SDL_Texture * Graphics::loadTexture(std::string imgPath)
 {
   return IMG_LoadTexture(mRenderer, imgPath.c_str());
+}
+
+void Graphics::drawLine(int x1, int y1, int x2, int y2)
+{
+  SDL_RenderDrawLine(mRenderer, x1, y1, x2, y2);
+}
+
+void Graphics::drawPoint(int x, int y)
+{
+  SDL_RenderDrawPoint(mRenderer, x, y);
+}
+
+void Graphics::setColor(int r, int g, int b, double a)
+{
+  SDL_SetRenderDrawColor(mRenderer, r, g, b, a);
 }

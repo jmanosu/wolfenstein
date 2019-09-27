@@ -16,13 +16,9 @@ Description: The Map class contains a three dimensional array of Wall objects
 
 #include "map.hpp"
 
-void drawHexagon(SDL_Renderer *, double, double, double);
-void drawHexagonGrid(SDL_Renderer *, double, double, double, double, double);
-void drawHexagonGrid2(SDL_Renderer *, double, double, int, double);
 // constructor for Map object
-Map::Map()
+Map::Map() : GameEntity(200, 200)
 {
-//  generateGridMap(5,5,20);
   generateCubeMap(3, 50);
   centerX = 200;
   centerY = 200;
@@ -31,19 +27,33 @@ Map::Map()
 //simple destructor, delets all dynamically allocated variables
 Map::~Map()
 {
+  for(auto & outer_map_pair : hexs) {
+    for(auto & inner_map_pair : outer_map_pair.second) {
+      delete inner_map_pair.second;
+    }
+  }
 }
 
 void Map::init()
 {
 }
 
-void Map::render(SDL_Renderer * renderer)
+void Map::render()
 {
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
-  for(int i = 0; i < this->hexs.size(); i++){
-    this->hexs[i].draw(renderer, centerX, centerY, 50);
+  for(int q = -this->radius; q <= this->radius; q++)
+  {
+    int r = std::min(this->radius, this->radius - q);
+    for(int i = 0; i < 2 * this->radius + 1 - std::abs(q); i++)
+    {
+      this->hexs[-q - r][q]->draw(centerX, centerY, 3);
+      r--;
+    }
   }
-  SDL_SetRenderDrawColor(renderer, 250, 0, 0, 1);
+}
+
+void Map::update()
+{
+
 }
 
 void Map::generateCubeMap(int radius, double size)
@@ -53,16 +63,20 @@ void Map::generateCubeMap(int radius, double size)
   for(int q = -radius; q <= radius; q++){
     int r = std::min(radius, radius - q);
     for(int i = 0; i < 2 * radius + 1 - std::abs(q); i++){
-        Hex temp;
-        temp.init(q, -q - r ,r , 30, 0, 0, 0, 1, .5);
-        this->hexs.push_back(temp);
+        HexTexture * newHexTexture = new HexTexture("desertHex2.png", 56, 73, 21);
+        Hex * newHex = new Hex(q, -q - r, r, newHexTexture);
+        newHex->parent(this);
+        this->hexs[newHex->getX()][newHex->getZ()] = newHex;
         r--;
     }
   }
+
   this->boundX = hexWidth * (radius / 3);
   this->boundY = hexHeight * (radius / 3);
-}
 
+  this->radius = radius;
+}
+/* 
 void Map::generateGridMap(int rows, int colms, int size)
 {
   int hexWidth  = 2 * cos(30*PI/180)*size;
@@ -70,20 +84,16 @@ void Map::generateGridMap(int rows, int colms, int size)
   for(int i = 0; i < rows; i++){
     for(int j = 0; j < colms; j++){
       if(j % 2){
-        Hex temp;
-        temp.init(hexWidth / 2 + hexWidth * i, hexHeight * j, size, 30, 0, 0, 0, 1, .5);
+        Hex * temp = new Hex(hexWidth / 2 + hexWidth * i, hexHeight * j, size, 30, 0, 0, 0);
         this->hexs.push_back(temp);
-        //drawHexagon(renderer, startx + hexWidth / 2 + hexWidth * i, starty + hexHeight * j, size);
       } else {
-        Hex temp;
-        temp.init(hexWidth * i, hexHeight * j, size, 30, 0, 0, 0, 1, .5);
+        Hex * temp = new Hex(hexWidth * i, hexHeight * j, size, 30, 0, 0, 0);
         this->hexs.push_back(temp);
-        //drawHexagon(renderer, startx + hexWidth * i, starty + hexHeight * j, size);
       }
     }
   }
 }
-
+*/
 void Map::setCenterXY(int nextX, int nextY)
 {
   if (nextX < -boundX) {
@@ -101,8 +111,6 @@ void Map::setCenterXY(int nextX, int nextY)
   } else {
     this->centerY = nextY;
   }
-  std::cout << "centerX: " << this->centerX << " boundX: " << boundX << std::endl;
-  std::cout << "centerY: " << this->centerY << " boundY: " << boundY << std::endl;
 }
 
 void Map::handleClick(SDL_Event event)
@@ -124,8 +132,8 @@ void Map::handleClick(SDL_Event event)
         eTracker.dragX = x;
         eTracker.dragY = y;
         eTracker.drag  = true;
-        eTracker.oldX  = this->centerX;
-        eTracker.oldY  = this->centerY;
+        eTracker.oldX  = this->pos(world).x;
+        eTracker.oldY  = this->pos(world).y;
         break;
       default:
         break;
@@ -136,9 +144,10 @@ void Map::handleClick(SDL_Event event)
       case SDL_BUTTON_LEFT:
         int x, y;
         SDL_GetMouseState(&x, &y);
-        std::cout << "x: " << x << " y: " << y << std::endl;
-        for(int i = 0; i < this->hexs.size(); i++){
-          this->hexs[i].checkCollision(x, y);
+        for(auto & outer_map_pair : hexs) {
+          for(auto & inner_map_pair : outer_map_pair.second) {
+            inner_map_pair.second->checkCollision(x, y);
+          }
         }
         break;
       case SDL_BUTTON_RIGHT:
@@ -154,7 +163,10 @@ void Map::handleClick(SDL_Event event)
         SDL_GetMouseState(&x, &y);
         differenceX = (x - eTracker.dragX) * .9;
         differenceY = (y - eTracker.dragY) * .9;
-        setCenterXY(eTracker.oldX + differenceX, eTracker.oldY + differenceY);
+        GVector::GVector newPos;
+        newPos.x = eTracker.oldX + differenceX;
+        newPos.y = eTracker.oldY + differenceY;
+        pos(newPos);
       }
       break;
     default:
@@ -163,51 +175,3 @@ void Map::handleClick(SDL_Event event)
 }
 
 #endif
-
-/*
-void drawHexagonGrid(SDL_Renderer * renderer, double startx, double starty, double rows, double colms, double size)
-{  
-  int hexWidth  = 2 * cos(30*PI/180)*size;
-  int hexHeight = (6* size)/4;
-  for(int i = 0; i < rows; i++){
-    for(int j = 0; j < colms; j++){
-      if(j % 2){
-        
-        //drawHexagon(renderer, startx + hexWidth / 2 + hexWidth * i, starty + hexHeight * j, size);
-      } else {
-        //drawHexagon(renderer, startx + hexWidth * i, starty + hexHeight * j, size);
-      }
-    }
-  }
-}
-
-void drawHexagonGrid2(SDL_Renderer * renderer, double startx, double starty, int radius, double size)
-{  
-  int hexWidth  = 2 * cos(30*PI/180)*size;
-  int hexHeight = (6* size)/4;
-  for(int q = -radius; q <= radius; q++){
-    int r = std::min(radius, radius - q);
-    for(int i = 0; i < 2 * radius + 1 - std::abs(q); i++){
-        drawHexagon(renderer, startx + hexWidth * q + hexWidth / 2 * r, starty + hexHeight * r, size);
-      r--;
-    }
-  }
-}
-
-
-void drawHexagon(SDL_Renderer * renderer, double centerX, double centerY, double size)
-{  
-  SDL_RenderDrawPoint(renderer, centerX, centerY);
-  int degree = 30;
-  double currentX = cos(degree*PI/180)*size + centerX;
-  double currentY = sin(degree*PI/180)*size + centerY;
-  for(int i = 0; i < 6; i++){
-    degree = degree + 60;
-    double nextX = cos(degree*PI/180)*size + centerX;
-    double nextY = sin(degree*PI/180)*size + centerY;
-    SDL_RenderDrawLine(renderer, currentX, currentY, nextX, nextY);
-    currentX = nextX;
-    currentY = nextY;
-  }
-}
-*/

@@ -17,6 +17,7 @@ Description: defenitions for the game class and functions. The Game class contai
 #include "assetManager.hpp"
 #include "map.hpp"
 #include "player.hpp"
+#include "timer.hpp"
 
 
 
@@ -25,17 +26,20 @@ class Game{
     Game();
     ~Game();
     void init(const char *, int, int, int, int, bool);
-    void render();
     void update();
-    void clean();
     void handleEvents();
+    void render();
+    void clean();
     bool running(){ return isRunning; }
   private:
     Graphics * mGraphics;
     assetManager * mAssetManager;
     Map * map;
     Player * player;
+    Timer * mTimer;
     bool isRunning;
+
+    const int FRAME_RATE = 60;
 
 };
 
