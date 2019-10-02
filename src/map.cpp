@@ -53,7 +53,11 @@ void Map::render()
 
 void Map::update()
 {
-
+    GVector::GVector updatedPos = pos();
+    std::cout << "x: " << updatedPos.x << " y: " << updatedPos.y << std::endl;
+    updatedPos.x = InputManager::instance()->getMouseDrag().x;
+    updatedPos.y = InputManager::instance()->getMouseDrag().y;
+    pos(updatedPos);
 }
 
 void Map::generateCubeMap(int radius, double size)
@@ -115,6 +119,7 @@ void Map::setCenterXY(int nextX, int nextY)
 
 void Map::handleClick(SDL_Event event)
 {
+  /*
   switch (event.type) {
     case SDL_KEYDOWN:
       switch( event.key.keysym.sym ){
@@ -171,7 +176,7 @@ void Map::handleClick(SDL_Event event)
       break;
     default:
       break;
-  }
+  }*/
 }
 
 #endif

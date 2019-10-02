@@ -18,6 +18,7 @@ Description: defenitions for the game class and functions. The Game class contai
 #include "map.hpp"
 #include "player.hpp"
 #include "timer.hpp"
+#include "inputManager.hpp"
 
 
 
@@ -37,6 +38,7 @@ class Game{
     Map * map;
     Player * player;
     Timer * mTimer;
+    InputManager * mInputManager;
     bool isRunning;
 
     const int FRAME_RATE = 60;

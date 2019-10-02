@@ -20,6 +20,7 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include "constants.hpp"
 #include "utl.cpp"
 #include "gameEntity.hpp"
+#include "inputManager.hpp"
 
 class Map : public GameEntity{
   public:

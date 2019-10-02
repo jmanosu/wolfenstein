@@ -26,6 +26,7 @@ Game::~Game(){
   mGraphics->release();
   mAssetManager->release();
   mTimer->release();
+  mInputManager->release();
 }
 
 //initalizer initalizes the SDL graphic display and objects like the Map and Player
@@ -36,43 +37,22 @@ void Game::init(const char * title, int xpos, int ypos, int width, int height, b
   map = new Map();
   isRunning = Graphics::initalized();
   mTimer = Timer::instance();
+  mInputManager = InputManager::instance();
 }
 
 //handleEvents checks for any input and if so executes their specific operation
 void Game::handleEvents(){
-  //creates SDL_Event temp object
-  SDL_Event event;
-  //polls the event handler and sets event to the top of the event stack
-  SDL_PollEvent(&event);
-  map->handleClick(event);
-  switch (event.type) {
-    //if close button is clicked the render is set to terminate
-    case SDL_QUIT:
-      isRunning = false;
-      break;
-    case SDL_KEYDOWN:
-      switch( event.key.keysym.sym ){
-          default:
-            break;
-        }
-        break;
-    case SDL_MOUSEBUTTONDOWN:
-      switch ( event.button.button ){
-      case SDL_BUTTON_LEFT:
-        break;
-      case SDL_BUTTON_RIGHT:
-        break;
-      default:
-        break;
-      }
-    default:
-      break;
+  mInputManager->update();
+  if (mInputManager->didQuit())
+  {
+    isRunning = false;
   }
 }
 
 //updates game objects
 void Game::update(){
   mTimer->update();
+  map->update();
 }
 
 //clears renderer and renderers the map

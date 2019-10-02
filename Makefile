@@ -9,7 +9,8 @@ FILES = ./src/main.cpp \
 ./src/texture.cpp \
 ./src/hexTexture.cpp \
 ./src/timer.cpp \
-./src/gameEntity.cpp
+./src/gameEntity.cpp \
+./src/inputManager.cpp
 
 build: $(FILES)
 	$(CC) $(FILES) $(LIBS)
