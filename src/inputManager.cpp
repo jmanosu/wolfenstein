@@ -60,6 +60,9 @@ void InputManager::update()
         case SDL_MOUSEMOTION:
             handleMouseMotion();
             break;
+        case SDL_WINDOWEVENT:
+            handleWindowEvent(mCurrentEvent.window.event);
+            break;
         default:
             break;
     }
@@ -82,7 +85,6 @@ void InputManager::handleMousePress(SDL_Keycode event)
 {
     switch (event){
         case SDL_BUTTON_LEFT:
-            std::cout << "in handleMousePress" << std::endl;
             SDL_GetMouseState(&mOldMouseX, &mOldMouseY);
             break;
         case SDL_BUTTON_RIGHT:
@@ -94,7 +96,6 @@ void InputManager::handleMousePress(SDL_Keycode event)
 
 void InputManager::handleMouseRelease(SDL_Keycode event)
 {
-    //std::cout << "in handleReleasePress" << std::endl;
     mOldMouseX = -1;
     mOldMouseY = -1;
 }
@@ -106,11 +107,24 @@ void InputManager::handleMouseMotion()
     {
         mDragX = mCurrentMouseX - mOldMouseX;
         mDragY = mCurrentMouseY - mOldMouseY;
+        mOldMouseX = mCurrentMouseX;
+        mOldMouseY = mCurrentMouseY;
     } else
     {
         mDragX = 0;
         mDragY = 0;
     }
-    std::cout << "dragX: " << mDragX << " dragY: " << mDragY << std::endl; 
-    std::cout << "mOldMouseX: " << mOldMouseX << " mOldMouseY: " << mOldMouseY << std::endl;   
+}
+
+void InputManager::handleWindowEvent(SDL_Keycode event)
+{
+    switch (event){
+        case SDL_WINDOWEVENT_LEAVE:
+            mOldMouseY = 1;
+            mOldMouseX = -1;
+            mDragX = 0;
+            mDragY = 0;
+        default:
+            break;
+    }
 }

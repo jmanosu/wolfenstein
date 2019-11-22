@@ -21,6 +21,8 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include "utl.cpp"
 #include "gameEntity.hpp"
 #include "inputManager.hpp"
+#include "cubeCoord.hpp"
+
 
 class Map : public GameEntity{
   public:
@@ -33,13 +35,14 @@ class Map : public GameEntity{
     void generateCubeMap(int, double);
     void setCenterXY(int, int);
     void handleClick(SDL_Event event);
+    void initMapNeighbors();
   private:
     int centerX, centerY;
     int boundX, boundY;
     eventTracker eTracker;
     //std::vector<Hex *> hexs;
     //std::map<int, std::map<int, std::map<int, Hex *>>> hexs;
-    std::map<int, std::map<int, Hex *>> hexs;
+    std::map<CubeCoord, Hex *> hexs;
     int radius;
 };
 

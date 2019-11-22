@@ -5,6 +5,7 @@ Last Edit: 10/13/2018
 
 Description: header function for Hex
 */
+
 #ifndef hex_hpp
 #define hex_hpp
 
@@ -18,28 +19,30 @@ Description: header function for Hex
 #include "hexTexture.hpp"
 #include "helpfulStructs.hpp"
 #include "gameEntity.hpp"
+#include "cubeCoord.hpp"
+#include "space.hpp"
+#include "inputManager.hpp"
 
 class Hex : public GameEntity{
   public:
-    Hex(int, int, int, HexTexture *);
-    //Hex(double, double, double, int, int, int, int);
+    Hex(int, int, HexTexture *);
     ~Hex();
-    //void draw(SDL_Renderer *, double, double, double);
-    void draw(int, int, int);
+    void draw();
     bool checkCollision(int, int);
-    //Color get_color();
-    int getX() { return x; }
-    int getY() { return y; }
-    int getZ() { return z; }
+    int getX() { return location.getX(); }
+    int getY() { return location.getY(); }
+    int getZ() { return location.getZ(); }
+    void addNeighbor(Hex *, Direction);
+    HexTexture * getHexTexture() { return hexTexture; }
+    void initalizeSpaces();
+    Space * getSpace(int);
+    void update();
   private:
-    int x, y, z;
+    CubeCoord location;
     int centerX, centerY;
-    //int degree;
-    //int size;
-    //std::vector<std::tuple<int, int>> vertices;
-    //Color hexColor;
-    //Texture * tileTexture;
     HexTexture * hexTexture;
+    std::vector<Hex *> mNeighbors;
+    std::vector<Space *> mSpaces;
 };
 
 #endif

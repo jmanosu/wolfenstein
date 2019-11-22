@@ -5,6 +5,9 @@ GameEntity::GameEntity(float x, float y)
     mPos.x = x;
     mPos.y = y;
 
+    mScale.x = 1;
+    mScale.y = 1;
+
     mRotation = 0.0f;
 
     mActive = false;
@@ -16,12 +19,12 @@ GameEntity::~GameEntity()
 {
 }
 
-void GameEntity::pos(GVector::GVector pos)
+void GameEntity::pos(GVector pos)
 {
     mPos = pos;
 }
 
-GVector::GVector GameEntity::pos(SPACE space)
+GVector GameEntity::pos(SPACE space)
 {
     if(space == local || mParent == nullptr)
     {
@@ -29,22 +32,28 @@ GVector::GVector GameEntity::pos(SPACE space)
         return mPos;
     }
 
-    return mParent->pos(world) + RotateVector(mPos, mParent->mRotation);
+    GVector scale = mParent->scale();
+    GVector rotPos = RotateVector(mPos, mParent->rotation(local));
+
+    rotPos.x = rotPos.x * mParent->scale().x;
+    rotPos.y = rotPos.y * mParent->scale().y;
+
+    return mParent->pos(world) + rotPos;
 }
 
-void GameEntity::scale(GVector::GVector scale)
+void GameEntity::scale(GVector scale)
 {
     mScale = scale;
 }
 
-GVector::GVector GameEntity::scale(SPACE space)
+GVector GameEntity::scale(SPACE space)
 {
     if(space == local || mParent == nullptr)
     {
         return mScale;
     }
 
-    GVector::GVector scale = mParent->scale(world);
+    GVector scale = mParent->scale();
     scale.x *= mScale.x;
     scale.y *= mScale.y;
     return scale;

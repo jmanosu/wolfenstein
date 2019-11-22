@@ -49,14 +49,14 @@ void Texture::render(int x, int y, int width, int height)
 
 void Texture::render()
 {
-    GVector::GVector pos = this->pos(world);
-    GVector::GVector scaller = this->scale(world);
+    GVector pos = this->pos(world);
+    GVector scaller = this->scale(world);
 
-    mRenderRect.x = static_cast<int>(pos.x - 0.5f * mWidth/* * scaller.x*/);
-    mRenderRect.y = static_cast<int>(pos.y - 0.5f * mHeight/* * scaller.y*/);
+    mRenderRect.x = static_cast<int>(pos.x - 0.5f * mWidth * scaller.x);
+    mRenderRect.y = static_cast<int>(pos.y - 0.5f * mHeight * scaller.y);
 
-    mRenderRect.w = static_cast<int>(mWidth/* * scaller.x*/);
-    mRenderRect.h = static_cast<int>(mHeight/* * scaller.y*/);
+    mRenderRect.w = static_cast<int>(mWidth * scaller.x);
+    mRenderRect.h = static_cast<int>(mHeight * scaller.y);
 
     mGraphics->drawTexture(mTexture, mClipRect, mRenderRect);
 }

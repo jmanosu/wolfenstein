@@ -6,17 +6,11 @@ Last Edit: 10/13/2018
 Description: Hex Object functions and methods
 */
 
-#ifndef Hex_cpp
-#define Hex_cpp
-
 #include <iostream>
 #include "hex.hpp"
 
 
-Hex::Hex(int x, int y, int z, HexTexture * hexTexture) {
-  this->x = x;
-  this->y = y;
-  this->z = z;
+Hex::Hex(int x, int z, HexTexture * hexTexture) : location(x,z), mNeighbors(int(NorthWest) + 1, 0){
   this->hexTexture = hexTexture;
 
   hexTexture->parent(this);
@@ -24,9 +18,9 @@ Hex::Hex(int x, int y, int z, HexTexture * hexTexture) {
   int hexWidth = hexTexture->getHexWidth();
   int hexHeight = hexTexture->getHexHeight();
 
-  GVector::GVector newPos;
-  newPos.x = hexWidth * x + hexWidth / 2 * z;
-  newPos.y = (hexHeight - hexTexture->getPeakHeight())  * z;
+  GVector newPos;
+  newPos.x = hexWidth * location.getX() + hexWidth / 2 * location.getZ();
+  newPos.y = (hexHeight - hexTexture->getPeakHeight())  * location.getZ();
   pos(newPos);
 }
 
@@ -36,19 +30,8 @@ Hex::~Hex(){
   delete hexTexture;
 }
 
-void Hex::draw(int drawX, int drawY, int scall)
+void Hex::draw()
 {
-  Graphics::instance()->setColor(250,250,250,1);
-  Graphics::instance()->drawPoint(pos(world).x, pos(world).y);
-  Graphics::instance()->drawPoint(pos(world).x+1, pos(world).y+1);
-  Graphics::instance()->drawPoint(pos(world).x+1, pos(world).y);
-  Graphics::instance()->drawPoint(pos(world).x, pos(world).y+1);
-  Graphics::instance()->drawPoint(pos(world).x-1, pos(world).y-1);
-  Graphics::instance()->drawPoint(pos(world).x, pos(world).y-1);
-  Graphics::instance()->drawPoint(pos(world).x-1, pos(world).y);
-  Graphics::instance()->drawPoint(pos(world).x+1, pos(world).y-1);
-  Graphics::instance()->drawPoint(pos(world).x-1, pos(world).y+1);
-  
   hexTexture->render();
 }
 
@@ -69,4 +52,28 @@ bool Hex::checkCollision(int px, int py)
   return collision;
 }
 
-#endif
+void Hex::addNeighbor(Hex * neighbor, Direction direction)
+{
+  mNeighbors.at(int(direction)) = neighbor;
+}
+
+Space * Hex::getSpace(int i)
+{
+  return mSpaces.at(i);
+}
+
+void Hex::initalizeSpaces()
+{
+}
+
+void Hex::update()
+{
+  if (InputManager::instance()->getCurrentEvent().type == SDL_MOUSEBUTTONDOWN) {
+    GVector mousePos = InputManager::instance()->getCurrentMousePos();
+    GVector myPos = pos(world);
+
+    if (mousePos.x < myPos.x + 20 && mousePos.x > myPos.x - 20 && mousePos.y < myPos.y + 20 && mousePos.y > myPos.y - 20) {
+      std::cout << "x: " << this->location.getX() << " z: " << this->location.getZ() << std::endl;
+    }
+  }
+}

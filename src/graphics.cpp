@@ -134,6 +134,11 @@ void Graphics::drawPoint(int x, int y)
   SDL_RenderDrawPoint(mRenderer, x, y);
 }
 
+void Graphics::drawPoint(GVector vector)
+{
+  SDL_RenderDrawPoint(mRenderer, vector.x, vector.y);
+}
+
 void Graphics::setColor(int r, int g, int b, double a)
 {
   SDL_SetRenderDrawColor(mRenderer, r, g, b, a);

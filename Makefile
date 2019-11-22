@@ -2,7 +2,7 @@ CC = g++
 LIBS = `sdl2-config --cflags --libs` -lSDL2_image
 FILES = ./src/main.cpp \
 ./src/game.cpp \
-./src/map.cpp ./src/hex.cpp \
+./src/map.cpp \
 ./src/player.cpp \
 ./src/graphics.cpp \
 ./src/assetManager.cpp \
@@ -10,7 +10,10 @@ FILES = ./src/main.cpp \
 ./src/hexTexture.cpp \
 ./src/timer.cpp \
 ./src/gameEntity.cpp \
-./src/inputManager.cpp
+./src/inputManager.cpp \
+./src/space.cpp \
+./src/hex.cpp \
+./src/cubeCoord.cpp
 
 build: $(FILES)
 	$(CC) $(FILES) $(LIBS)

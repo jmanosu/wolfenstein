@@ -34,9 +34,12 @@ class InputManager{
         void handleKeyboardPress(SDL_Keycode);
         void handleKeyboardRelease(SDL_Keycode);
         void handleMouseMotion();
+        void handleWindowEvent(SDL_Keycode);
 
-        GVector::GVector getCurrentMousePos() { return GVector::GVector(mCurrentMouseX, mCurrentMouseY);}
-        GVector::GVector getMouseDrag() { return GVector::GVector(mDragX, mDragY);}
+        GVector getCurrentMousePos() { return GVector(mCurrentMouseX, mCurrentMouseY);}
+        GVector getMouseDrag() { return GVector(mDragX, mDragY); }
+
+        SDL_Event getCurrentEvent() { return mCurrentEvent; }
 
         bool didQuit() { return mQuit; }
 };

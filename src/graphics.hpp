@@ -13,6 +13,7 @@ Description: header function for graphics.hpp
 #include <map>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "gamingVector.hpp"
 
 class Graphics{
     public:
@@ -28,6 +29,7 @@ class Graphics{
         void printError();
         void drawLine(int, int, int, int);
         void drawPoint(int, int);
+        void drawPoint(GVector);
         void setColor(int, int, int, double);
 
     public:
