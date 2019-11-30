@@ -10,10 +10,12 @@ Description: Hex Object functions and methods
 #include "hex.hpp"
 
 
-Hex::Hex(int x, int z, HexTexture * hexTexture) : location(x,z), mNeighbors(int(NorthWest) + 1, 0){
+Hex::Hex(int x, int z, HexTexture * hexTexture) : location(x,z), mNeighbors(int(NorthWest) + 1, 0), mHighlighted(false){
   this->hexTexture = hexTexture;
+  this->hexTextureHighlight = new HexTexture("desertHex9Highlight.png", hexTexture->getHexHeight(), hexTexture->getHexWidth(), hexTexture->getPeakHeight());
 
   hexTexture->parent(this);
+  hexTextureHighlight->parent(this);
 
   int hexWidth = hexTexture->getHexWidth();
   int hexHeight = hexTexture->getHexHeight();
@@ -22,17 +24,25 @@ Hex::Hex(int x, int z, HexTexture * hexTexture) : location(x,z), mNeighbors(int(
   newPos.x = hexWidth * location.getX() + hexWidth / 2 * location.getZ();
   newPos.y = (hexHeight - hexTexture->getPeakHeight())  * location.getZ();
   pos(newPos);
+
+  for (size_t i = North; i < NorthWest; i++) {
+    mNeighbors.at(i) = NULL;
+  }
 }
 
 
 //Hex destructor
 Hex::~Hex(){
   delete hexTexture;
+  delete hexTextureHighlight;
 }
 
 void Hex::draw()
 {
   hexTexture->render();
+  if (mHighlighted) {
+    hexTextureHighlight->render();
+  }
 }
 
 bool Hex::checkCollision(int px, int py)
@@ -57,7 +67,7 @@ void Hex::addNeighbor(Hex * neighbor, Direction direction)
   mNeighbors.at(int(direction)) = neighbor;
 }
 
-Space * Hex::getSpace(int i)
+CornerSpace * Hex::getSpace(int i)
 {
   return mSpaces.at(i);
 }
@@ -74,6 +84,18 @@ void Hex::update()
 
     if (mousePos.x < myPos.x + 20 && mousePos.x > myPos.x - 20 && mousePos.y < myPos.y + 20 && mousePos.y > myPos.y - 20) {
       std::cout << "x: " << this->location.getX() << " z: " << this->location.getZ() << std::endl;
+      mHighlighted = true;
+      for (size_t i = North; i <= NorthWest; i++) {
+        std::cout << i << ": " << mNeighbors.at(i) << std::endl;;
+        Hex * neighbor = mNeighbors.at(i);
+        if (neighbor) {
+          neighbor->setHighlighted(true);
+        }
+      }
     }
   }
+}
+
+void Hex::setHighlighted(bool highlighted) {
+  this->mHighlighted = highlighted;
 }

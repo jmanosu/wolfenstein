@@ -11,7 +11,7 @@ FILES = ./src/main.cpp \
 ./src/timer.cpp \
 ./src/gameEntity.cpp \
 ./src/inputManager.cpp \
-./src/space.cpp \
+./src/cornerSpace.cpp \
 ./src/hex.cpp \
 ./src/cubeCoord.cpp
 

@@ -78,7 +78,7 @@ void Map::generateCubeMap(int radius, double size)
   for(int q = -radius; q <= radius; q++){
     int r = std::min(radius, radius - q);
     for(int i = 0; i < 2 * radius + 1 - std::abs(q); i++){
-        HexTexture * newHexTexture = new HexTexture("desertHex7.png", 54, 74, 22);
+        HexTexture * newHexTexture = new HexTexture("desertHex9.png", 54, 73, 22);
         Hex * newHex = new Hex(q, r, newHexTexture);
         newHex->parent(this);
         this->hexs[CubeCoord(newHex->getX(), newHex->getZ())] = newHex;
@@ -123,13 +123,15 @@ void Map::initMapNeighbors()
     int r = std::min(this->radius, this->radius - q);
     for(int i = 0; i < 2 * this->radius + 1 - std::abs(q); i++)
     {
-      for (size_t i = North; i < NorthWest; i++)
+      for (size_t i = North; i <= NorthWest; i++)
       {
-        Hex * neighborHex = this->hexs.find(CubeCoord(q, r) + getCubeCoord(Direction(i)))->second;
+        std::map<CubeCoord, Hex *>::iterator it;
+        CubeCoord temp = CubeCoord(q, r) + getCubeCoord(Direction(i));
+        it = this->hexs.find(CubeCoord(q, r) + getCubeCoord(Direction(i)));
         Hex * hex = this->hexs.find(CubeCoord(q, r))->second;
-        if(neighborHex && hex) {
-          hex->addNeighbor(neighborHex, Direction(i));
-        }
+        if(it != hexs.end()) {
+          hex->addNeighbor(it->second, Direction(i));
+        } 
       }
       
       r--;

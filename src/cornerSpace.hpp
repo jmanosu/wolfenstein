@@ -5,10 +5,10 @@
 #include "graphics.hpp"
 #include "gamingVector.hpp"
 
-class Space : public GameEntity {
+class CornerSpace : public GameEntity {
     public:
-        Space();
-        ~Space();
+        CornerSpace();
+        ~CornerSpace();
 
         void render();
         void update();

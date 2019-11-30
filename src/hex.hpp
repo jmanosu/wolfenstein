@@ -20,7 +20,7 @@ Description: header function for Hex
 #include "helpfulStructs.hpp"
 #include "gameEntity.hpp"
 #include "cubeCoord.hpp"
-#include "space.hpp"
+#include "cornerSpace.hpp"
 #include "inputManager.hpp"
 
 class Hex : public GameEntity{
@@ -35,14 +35,18 @@ class Hex : public GameEntity{
     void addNeighbor(Hex *, Direction);
     HexTexture * getHexTexture() { return hexTexture; }
     void initalizeSpaces();
-    Space * getSpace(int);
+    CornerSpace * getSpace(int);
     void update();
+
+    void setHighlighted(bool);
   private:
     CubeCoord location;
     int centerX, centerY;
     HexTexture * hexTexture;
+    HexTexture * hexTextureHighlight;
     std::vector<Hex *> mNeighbors;
-    std::vector<Space *> mSpaces;
+    std::vector<CornerSpace *> mSpaces;
+    bool mHighlighted;
 };
 
 #endif
