@@ -9,9 +9,6 @@ Texture::Texture(std::string path)
 
     SDL_QueryTexture(mTexture, NULL, NULL, &mWidth, &mHeight);
 
-    mRenderRect.w = mWidth;
-    mRenderRect.h = mHeight;
-
     mClipRect.x = 0;
     mClipRect.y = 0;
     mClipRect.w = mWidth;
@@ -25,12 +22,28 @@ Texture::Texture(std::string path, int x, int y, int width, int height)
     mGraphics = Graphics::instance();
     mTexture  = assetManager::instance()->getTexture(path);
 
+    mWidth = width;
+    mHeight = height;
+
     mClipped = true;
 
     mClipRect.x = x;
     mClipRect.y = y;
     mClipRect.w = width;
     mClipRect.h = height;
+}
+
+Texture::Texture(std::string text, std::string filePath, int size, SDL_Color color)
+{
+    GameEntity();
+
+    mGraphics = Graphics::instance();
+    mTexture  = assetManager::instance()->getTextTexture(text, filePath, size, color);
+
+    mClipped = false;
+
+    SDL_QueryTexture(mTexture, NULL, NULL, &mWidth, &mHeight);
+
 }
 
 Texture::~Texture()
@@ -41,10 +54,8 @@ Texture::~Texture()
 
 void Texture::render(int x, int y, int width, int height)
 {
-    SDL_Rect renderRect, clipRect;
-    renderRect = {x, y, width, height}; 
-    clipRect = {0, 0, width, height};
-    mGraphics->drawTexture(mTexture, clipRect, renderRect);
+    SDL_Rect renderRect = {x, y, width, height}; 
+    mGraphics->drawTexture(mTexture, nullptr, &renderRect);
 }
 
 void Texture::render()
@@ -58,7 +69,7 @@ void Texture::render()
     mRenderRect.w = static_cast<int>(mWidth * scaller.x);
     mRenderRect.h = static_cast<int>(mHeight * scaller.y);
 
-    mGraphics->drawTexture(mTexture, mClipRect, mRenderRect);
+    mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
 }
 
 void Texture::update()

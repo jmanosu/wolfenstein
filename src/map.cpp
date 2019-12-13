@@ -24,6 +24,9 @@ Map::Map() : GameEntity(200, 200)
   initMapNeighbors();
   centerX = 200;
   centerY = 200;
+  mATexture = new AnimatedTexture("animatedDot.png", 0, 0, 19, 19, 10, 1000.0f, AnimatedTexture::ANIM_DIR::horizontal);
+  mATexture->pos(GVector(200,200));
+  mATexture->WrapMode(AnimatedTexture::WRAP_MODE::loop);
 }
 
 //simple destructor, delets all dynamically allocated variables
@@ -49,10 +52,11 @@ void Map::render()
       r--;
     }
   }
-  for (auto it = hexs.begin(); it != hexs.end(); it++ ) {
-    Hex * hex = it->second;
-    hex->update();
-  }
+  const SDL_version *link_version=TTF_Linked_Version();
+  Texture temp("HELLO DAD!", "Roboto-Black.ttf", 180, {.r = 255, .g = 255, .b = 0, .a = 0});
+  temp.parent(this);
+  temp.render(200, 200, 300, 300);
+  mATexture->render();
 }
 
 void Map::update()
@@ -63,6 +67,11 @@ void Map::update()
     updatedPos.y += InputManager::instance()->getMouseDrag().y;
     pos(updatedPos);
   }
+  for (auto it = hexs.begin(); it != hexs.end(); it++ ) {
+    Hex * hex = it->second;
+    hex->update();
+  }
+  mATexture->update();
 }
 
 void Map::generateCubeMap(int radius, double size)
@@ -86,10 +95,6 @@ void Map::generateCubeMap(int radius, double size)
         r--;
     }
   }
-  //for (auto it = hexs.begin(); it != hexs.end(); it++ ) {
-  //  Hex * hex = it->second;
-  //  std::cout << hex << std::endl;
-  //}
 }
 
 void Map::setCenterXY(int nextX, int nextY)

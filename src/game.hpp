@@ -19,6 +19,7 @@ Description: defenitions for the game class and functions. The Game class contai
 #include "player.hpp"
 #include "timer.hpp"
 #include "inputManager.hpp"
+#include "screenManager.hpp"
 
 
 
@@ -35,10 +36,10 @@ class Game{
   private:
     Graphics * mGraphics;
     assetManager * mAssetManager;
-    Map * map;
     Player * player;
     Timer * mTimer;
     InputManager * mInputManager;
+    ScreenManager * mScreenManager;
     bool isRunning;
 
     const int FRAME_RATE = 60;

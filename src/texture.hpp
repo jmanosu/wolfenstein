@@ -19,6 +19,7 @@ class Texture : public GameEntity{
     public:
         Texture(std::string path);
         Texture(std::string path, int x, int y, int width, int height);
+        Texture(std::string text, std::string fontPath, int size, SDL_Color color = {.r = 0, .g = 0, .b = 0, .a = 0});
         ~Texture();
 
         int getHeight() { return mHeight; }

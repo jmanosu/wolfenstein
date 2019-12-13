@@ -1,5 +1,6 @@
 CC = g++
-LIBS = `sdl2-config --cflags --libs` -lSDL2_image
+LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
+FLAGS = `sdl2-config --cflags`
 FILES = ./src/main.cpp \
 ./src/game.cpp \
 ./src/map.cpp \
@@ -13,7 +14,11 @@ FILES = ./src/main.cpp \
 ./src/inputManager.cpp \
 ./src/cornerSpace.cpp \
 ./src/hex.cpp \
-./src/cubeCoord.cpp
+./src/cubeCoord.cpp \
+./src/animatedTexture.cpp \
+./src/screen.cpp \
+./src/screenManager.cpp \
+./src/tempScreen.cpp
 
 build: $(FILES)
-	$(CC) $(FILES) $(LIBS)
+	$(CC) $(FILES) $(FLAGS) $(LIBS)

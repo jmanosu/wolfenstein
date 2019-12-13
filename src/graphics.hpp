@@ -13,6 +13,7 @@ Description: header function for graphics.hpp
 #include <map>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "gamingVector.hpp"
 
 class Graphics{
@@ -23,13 +24,18 @@ class Graphics{
 
         void render();
         void clear();
-        void drawTexture(SDL_Texture *, SDL_Rect &, SDL_Rect &);
+
         SDL_Renderer * getRenderer();
         SDL_Texture * loadTexture(std::string);
+        SDL_Texture * createTextTexture(TTF_Font * font, std::string text, SDL_Color color = {.r = 0, .g = 0, .b = 0, .a = 0});
+
         void printError();
+
+        void drawTexture(SDL_Texture *, SDL_Rect *, SDL_Rect *);
         void drawLine(int, int, int, int);
         void drawPoint(int, int);
         void drawPoint(GVector);
+        
         void setColor(int, int, int, double);
 
     public:

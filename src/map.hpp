@@ -22,6 +22,7 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include "gameEntity.hpp"
 #include "inputManager.hpp"
 #include "cubeCoord.hpp"
+#include "animatedTexture.hpp"
 
 
 class Map : public GameEntity{
@@ -44,6 +45,7 @@ class Map : public GameEntity{
     //std::map<int, std::map<int, std::map<int, Hex *>>> hexs;
     std::map<CubeCoord, Hex *> hexs;
     int radius;
+    AnimatedTexture * mATexture;
 };
 
 #endif

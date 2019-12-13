@@ -15,18 +15,19 @@ Description: The Game class allows for the creation of a Game object that can
 #define game_cpp
 
 #include "game.hpp"
+#include "tempScreen.hpp"
 
 //Game constructor
 Game::Game(){}
 
 //Game deconstructor
 Game::~Game(){
-  delete map;
   delete player;
-  mGraphics->release();
   mAssetManager->release();
+  mGraphics->release();
   mTimer->release();
   mInputManager->release();
+  mScreenManager->release();
 }
 
 //initalizer initalizes the SDL graphic display and objects like the Map and Player
@@ -34,10 +35,13 @@ void Game::init(const char * title, int xpos, int ypos, int width, int height, b
 {
   mGraphics = Graphics::instance();
   mAssetManager = assetManager::instance();
-  map = new Map();
   isRunning = Graphics::initalized();
   mTimer = Timer::instance();
   mInputManager = InputManager::instance();
+  mScreenManager = ScreenManager::instance();
+
+  mScreenManager->addScreen("Temp", new TempScreen());
+  mScreenManager->setCurrentScreen("Temp");
 }
 
 //handleEvents checks for any input and if so executes their specific operation
@@ -52,7 +56,7 @@ void Game::handleEvents(){
 //updates game objects
 void Game::update(){
   mTimer->update();
-  map->update();
+  mScreenManager->update();
 }
 
 //clears renderer and renderers the map
@@ -61,7 +65,7 @@ void Game::render(){
   {
     SDL_SetRenderDrawColor(mGraphics->getRenderer(), 255, 0, 0, 255);
     mGraphics->clear();
-    map->render();
+    mScreenManager->render();
     mGraphics->render();
     mTimer->reset();
   }

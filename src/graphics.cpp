@@ -40,11 +40,6 @@ void Graphics::clear()
   SDL_RenderClear(mRenderer);
 }
 
-void Graphics::drawTexture(SDL_Texture * texture, SDL_Rect & clipRect, SDL_Rect & renderRect)
-{
-  SDL_RenderCopy(mRenderer, texture, &clipRect, &renderRect);
-}
-
 //private
 Graphics::Graphics()
 {
@@ -100,6 +95,11 @@ bool Graphics::init()
       return false;
     }
 
+    if(TTF_Init() == -1) {
+      std::cout << "ERROR initalizing font" << std::endl;
+      return false;
+    }
+
     //sets is Running variable to true which is used to tell if user wants to exit
     return true;
 
@@ -122,6 +122,32 @@ SDL_Renderer * Graphics::getRenderer()
 SDL_Texture * Graphics::loadTexture(std::string imgPath)
 {
   return IMG_LoadTexture(mRenderer, imgPath.c_str());
+}
+
+SDL_Texture * Graphics::createTextTexture(TTF_Font * font, std::string text, SDL_Color color)
+{
+  SDL_Surface * surface = TTF_RenderText_Solid(font, text.c_str(), color);
+
+  if (surface == nullptr) {
+    std::cout << "ERROR failed to generate surface for text texture" << std::endl;
+    return nullptr;
+  }
+
+  SDL_Texture * texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+
+  if (texture == nullptr) {
+    std::cout << "ERROR failed to generate texture for text texture" << std::endl;
+    return nullptr;
+  }
+
+  SDL_FreeSurface(surface);
+
+  return texture;
+}
+
+void Graphics::drawTexture(SDL_Texture * texture, SDL_Rect * clipRect, SDL_Rect * renderRect)
+{
+  SDL_RenderCopy(mRenderer, texture, clipRect, renderRect);
 }
 
 void Graphics::drawLine(int x1, int y1, int x2, int y2)
