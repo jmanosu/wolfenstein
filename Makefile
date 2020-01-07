@@ -2,23 +2,25 @@ CC = g++
 LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
 FLAGS = `sdl2-config --cflags`
 FILES = ./src/main.cpp \
-./src/game.cpp \
-./src/map.cpp \
-./src/player.cpp \
-./src/graphics.cpp \
-./src/assetManager.cpp \
-./src/texture.cpp \
-./src/hexTexture.cpp \
-./src/timer.cpp \
-./src/gameEntity.cpp \
-./src/inputManager.cpp \
-./src/cornerSpace.cpp \
-./src/hex.cpp \
-./src/cubeCoord.cpp \
-./src/animatedTexture.cpp \
-./src/screen.cpp \
-./src/screenManager.cpp \
-./src/tempScreen.cpp
+./src/game/game.cpp \
+./src/game/objects/gameEntity.cpp \
+./src/game/objects/map.cpp \
+./src/game/objects/hexObject.cpp \
+./src/game/objects/hexs/hex.cpp \
+./src/game/objects/hexs/oceanHex.cpp \
+./src/game/objects/hexs/grassHex.cpp \
+./src/game/utils/cubeCoord.cpp \
+./src/game/player/player.cpp \
+./src/graphics/graphics.cpp \
+./src/graphics/texture.cpp \
+./src/graphics/hexTexture.cpp \
+./src/graphics/animatedTexture.cpp \
+./src/managers/assetManager.cpp \
+./src/managers/inputManager.cpp \
+./src/managers/screenManager.cpp \
+./src/misc/timer.cpp \
+./src/screens/screen.cpp \
+./src/screens/tempScreen.cpp
 
 build: $(FILES)
-	$(CC) $(FILES) $(FLAGS) $(LIBS)
+	$(CC) -I ./src $(FILES) $(FLAGS) $(LIBS)
