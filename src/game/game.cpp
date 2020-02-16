@@ -23,22 +23,30 @@ Game::Game(){}
 //Game deconstructor
 Game::~Game(){
   delete player;
-  mAssetManager->release();
-  mGraphics->release();
-  mTimer->release();
-  mInputManager->release();
+
   mScreenManager->release();
+  mInputManager->release();
+  mAssetManager->release();
+
+  mTimer->release();
+
+  mTextureCache->release();
+  mGraphics->release();
 }
 
 //initalizer initalizes the SDL graphic display and objects like the Map and Player
 void Game::init(const char * title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
   mGraphics = Graphics::instance();
-  mAssetManager = assetManager::instance();
-  isRunning = Graphics::initalized();
+  mTextureCache = TextureCache::instance();
+
   mTimer = Timer::instance();
+
+  mAssetManager = assetManager::instance();
   mInputManager = InputManager::instance();
   mScreenManager = ScreenManager::instance();
+
+  isRunning = Graphics::initalized();
 
   mScreenManager->addScreen("Temp", new TempScreen());
   mScreenManager->setCurrentScreen("Temp");

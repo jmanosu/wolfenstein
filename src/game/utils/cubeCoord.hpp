@@ -17,6 +17,7 @@ class CubeCoord
     int x;
     int y;
     int z;
+    int d;
 
     public:
     CubeCoord() : x(0), y(0), z(0) {}
@@ -28,6 +29,7 @@ class CubeCoord
     int getZ() const { return z; }
     int getQ() const { return x; }
     int getR() const { return z; }
+    int getD() const { return d; }
     void set(int _q, int _r);
 };
 
@@ -42,6 +44,10 @@ enum Direction {
 };
 
 CubeCoord getCubeCoord(Direction direction);
-CubeCoord axialToCube(int row, int column);
+
+CubeCoord axialToCubeOddHorizontal(int row, int column);
+CubeCoord axialToCubeEvenHorizontal(int row, int column);
+CubeCoord axialToCubeOddVertical(int row, int column);
+CubeCoord axialToCubeEvenVertical(int row, int column);
 
 #endif

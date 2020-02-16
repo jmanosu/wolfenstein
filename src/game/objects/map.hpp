@@ -14,6 +14,7 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include <SDL2/SDL.h>
 #include <cmath>
 #include <vector>
+#include <list>
 #include <tuple>
 #include "game/player/player.hpp"
 #include "game/objects/gameEntity.hpp"
@@ -31,18 +32,21 @@ class Map : public GameEntity{
     void init();
     void render();
     void update();
-    void generateCubeMap(int, double);
     void setCenterXY(int, int);
     void handleClick(SDL_Event event);
     void initMapNeighbors();
-    void loadMap(std::vector<std::vector<int>>, std::vector<Hex>);
-    void addHex(CubeCoord, Hex *);
+    void loadMap(std::vector<std::vector<int>>, std::vector<Hex *>);
+    void addHex(CubeCoord, Hex *);\
+    Hex * getHex(int q, int r);
+  private:
+    bool compareRenderOrder(Hex *, Hex *);
   private:
     int centerX, centerY;
     int boundX, boundY;
     int radius;
     std::map<CubeCoord, Hex *> hexs;
-
+    std::list<Hex *> renderHexList;
+    int mHexHeight, mHexWidth, mHexPeakHeight;
 };
 
 #endif

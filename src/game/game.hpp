@@ -13,14 +13,19 @@ Description: defenitions for the game class and functions. The Game class contai
 
 #include <SDL2/SDL.h>
 #include <iostream>
+
 #include "graphics/graphics.hpp"
+
 #include "managers/assetManager.hpp"
 #include "managers/inputManager.hpp"
 #include "managers/screenManager.hpp"
+
 #include "game/objects/map.hpp"
 #include "game/player/player.hpp"
+
 #include "misc/timer.hpp"
 
+#include "graphics/textureCache.hpp"
 
 
 class Game{
@@ -35,11 +40,15 @@ class Game{
     bool running(){ return isRunning; }
   private:
     Graphics * mGraphics;
-    assetManager * mAssetManager;
+    TextureCache * mTextureCache;
+    
     Player * player;
     Timer * mTimer;
+
     InputManager * mInputManager;
     ScreenManager * mScreenManager;
+    assetManager * mAssetManager;
+
     bool isRunning;
 
     const int FRAME_RATE = 60;

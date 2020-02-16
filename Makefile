@@ -7,14 +7,13 @@ FILES = ./src/main.cpp \
 ./src/game/objects/map.cpp \
 ./src/game/objects/hexObject.cpp \
 ./src/game/objects/hexs/hex.cpp \
-./src/game/objects/hexs/oceanHex.cpp \
-./src/game/objects/hexs/grassHex.cpp \
+./src/game/objects/hexs/landHex.cpp \
 ./src/game/utils/cubeCoord.cpp \
 ./src/game/player/player.cpp \
 ./src/graphics/graphics.cpp \
 ./src/graphics/texture.cpp \
-./src/graphics/hexTexture.cpp \
 ./src/graphics/animatedTexture.cpp \
+./src/graphics/textureCache.cpp \
 ./src/managers/assetManager.cpp \
 ./src/managers/inputManager.cpp \
 ./src/managers/screenManager.cpp \

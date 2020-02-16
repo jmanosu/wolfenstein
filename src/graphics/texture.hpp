@@ -25,6 +25,8 @@ class Texture : public GameEntity {
 
         int getHeight() { return mHeight; }
         int getWidth() { return mWidth; }
+
+        Texture clip(int x, int y, int width, int height);
     
         void update();
         void render();

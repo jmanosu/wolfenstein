@@ -15,11 +15,12 @@ Description: The Map class contains a three dimensional array of Wall objects
 #define Map_cpp
 
 #include "map.hpp"
+#include "game/objects/hexObject.hpp"
 
 // constructor for Map object
 Map::Map() : GameEntity(200, 200)
 {
-  scale(GVector(4,4));
+  scale(GVector(3,3));
   centerX = 200;
   centerY = 200;
 }
@@ -37,10 +38,16 @@ void Map::init()
 }
 
 void Map::render()
-{ 
-  for(auto & hex : hexs) {
-    hex.second->draw();
+{
+
+  for(int i = 0; i < 2; i++){
+    for(auto & hex : hexs) {
+      hex.second->renderBackground();
+      hex.second->renderMidground();
+      hex.second->renderForground();
+    }
   }
+
 }
 
 void Map::update()
@@ -54,29 +61,6 @@ void Map::update()
   for (auto it = hexs.begin(); it != hexs.end(); it++ ) {
     Hex * hex = it->second;
     hex->update();
-  }
-}
-
-void Map::generateCubeMap(int radius, double size)
-{
-  int hexWidth  = 2 * cos(30*PI/180)*size;
-  int hexHeight = (6* size)/4;
-
-  this->boundX = hexWidth * (radius / 3);
-  this->boundY = hexHeight * (radius / 3);
-
-  this->radius = radius;
-
-  for(int q = -radius; q <= radius; q++){
-    int r = std::min(radius, radius - q);
-    for(int i = 0; i < 2 * radius + 1 - std::abs(q); i++){
-        Hex * newHex = new Hex();
-        HexTexture newHexTexture("forest10.png", 54, 73, 22);
-        newHex->setLocation(CubeCoord(q, r));
-//        newHex->setTexture(newHexTexture);
-        addHex(CubeCoord(newHex->getX(), newHex->getZ()), newHex);
-        r--;
-    }
   }
 }
 
@@ -119,6 +103,26 @@ void Map::initMapNeighbors()
   }
 }
 
+
+void Map::loadMap(std::vector<std::vector<int>> map, std::vector<Hex *> mapBindings)
+{
+  for(int i = 0; i < map.size(); i++) {
+    for(int j = 0; j < map[i].size(); j++) {
+      if (map[i][j] == -1) {
+        continue;
+      }
+      Hex * newHex = mapBindings.at(map[i][j])->clone();
+      CubeCoord location = axialToCubeOddVertical(i, j);
+      newHex->setLocation(location);
+      if ( i == 3 && j == 3) {
+        newHex->setHexObject(new HexObject());
+      }
+      addHex(location, newHex);
+    }
+  }
+  initMapNeighbors();
+}
+
 void Map::addHex(CubeCoord location, Hex * hex)
 {
   if(this->hexs[location] != nullptr) {
@@ -131,23 +135,16 @@ void Map::addHex(CubeCoord location, Hex * hex)
   }
 }
 
-
-
-void Map::loadMap(std::vector<std::vector<int>> map, std::vector<Hex> mapBindings)
+Hex * Map::getHex(int q, int r)
 {
-  for(int i = 0; i < map.size(); i++) {
-    for(int j = 0; j < map[i].size(); j++) {
-      if (map[i][j] == -1) {
-        continue;
-      }
-      Hex * newHex = new Hex();
-      *newHex = mapBindings.at(map[i][j]);
-      CubeCoord location = axialToCube(i, j);
-      newHex->setLocation(location);
-      addHex(location, newHex);
-    }
+  std::map<CubeCoord, Hex *>::iterator it;
+  it = hexs.find(CubeCoord(q, r));
+  if (it != hexs.end()) {
+    return it->second;
+  } else {
+    return NULL;
   }
-  initMapNeighbors();
 }
+
 
 #endif

@@ -7,9 +7,10 @@ CubeCoord operator+(const CubeCoord & lhs, const CubeCoord & rhs)
 
 bool operator<(const CubeCoord & lhs, const CubeCoord & rhs)
 {
+
     if(lhs.getZ() < rhs.getZ()) return true;
     if(lhs.getZ() > rhs.getZ()) return false;
-    //x == coord.x
+
     if(lhs.getX() < rhs.getX()) return true;
     if(lhs.getX() > rhs.getX()) return false;
 
@@ -49,9 +50,30 @@ CubeCoord getCubeCoord(Direction direction) {
     }
 }
 
-CubeCoord axialToCube(int row, int column)
+CubeCoord axialToCubeOddHorizontal(int row, int column)
 {
-    int q = column - (row-  (row&1)) / 2;
+    int q = column - (row - (row&1)) / 2;
     int r = row;
-    return CubeCoord(q,r);
+    return CubeCoord(q, r);
+}
+
+CubeCoord axialToCubeEvenHorizontal(int row, int column)
+{
+    int q = column - (row + (row&1)) / 2;
+    int r = row;
+    return CubeCoord(q, r);
+}
+
+CubeCoord axialToCubeOddVertical(int row, int column)
+{
+    int q = column;
+    int r = row - (column - (column&1)) / 2;
+    return CubeCoord(q, r);
+}
+
+CubeCoord axialToCubeEvenVertical(int row, int column)
+{
+    int q = column;
+    int r = row - (column + (column&1)) / 2;
+    return CubeCoord(q, r);
 }

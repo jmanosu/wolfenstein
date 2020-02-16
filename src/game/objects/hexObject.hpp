@@ -2,6 +2,7 @@
 #define HEXOBJECT
 
 #include "game/objects/gameEntity.hpp"
+#include "graphics/texture.hpp"
 
 class HexObject : public GameEntity {
     public:
@@ -10,6 +11,9 @@ class HexObject : public GameEntity {
 
         void render();
         void update();
+
+    private:
+        Texture * mHexObjectTexture;
 
 };
 

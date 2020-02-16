@@ -10,99 +10,214 @@ Description: Hex Object functions and methods
 #include "hex.hpp"
 
 
-Hex::Hex() : mLocation(0,0), mNeighbors(int(NorthWest) + 1, 0), mHexTexture(nullptr), mHexSkirtTexture(nullptr), mHighlighted(false), mWidth(0), mHeight(0), mPeakHeight(0)
+Hex::Hex() :
+  mLocation(0,0),
+  mOrientation(horizontal),
+
+  mHexTexture(nullptr),
+  mSkirtTexture(nullptr),
+  mOutlineTexture(nullptr),
+  mHighlightTexture(nullptr),
+
+  mNeighbors(int(NorthWest) + 1, 0),
+
+  mWidth(0),
+  mHeight(0),
+  mPeakHeight(0),
+  mLevel(0),
+
+  mHighlighted(false),
+
+  mHexObject(nullptr)
 {
   for (size_t i = North; i < NorthWest; i++) {
     mNeighbors.at(i) = nullptr;
   }
-  hexTextureHighlight = nullptr;
 }
 
 Hex::Hex(const Hex &obj) : Hex()
 {
-  setHexDimensions(obj.mWidth, obj.mHeight, obj.mPeakHeight);
+  setDimensions(obj.mOrientation, obj.mWidth, obj.mHeight, obj.mPeakHeight, obj.mLevel);
 
-  if(obj.mHexTexture != nullptr) {
-    setHexTexture(*(obj.mHexTexture));
-  }
-
-  if(obj.mHexSkirtTexture != nullptr) {
-    setHexSkirtTexture(*(obj.mHexSkirtTexture));
-  }
+  _setHexTexture(obj.mHexTexture);
+  _setSkirtTexture(obj.mSkirtTexture);
+  _setOutlineTexture(obj.mOutlineTexture);
+  _setHighlighTexture(obj.mHighlightTexture);
 
   setLocation(obj.mLocation);
+
+  mLevel = obj.mLevel;
+  mOrientation = obj.mOrientation;
 }
 
 
 //Hex destructor
 Hex::~Hex(){
   delete mHexTexture;
-  delete mHexSkirtTexture;
-  delete hexTextureHighlight;
+  delete mSkirtTexture;
+  delete mOutlineTexture;
+  delete mHighlightTexture;
 }
 
-void Hex::setLocation(CubeCoord location, int height)
+
+Hex & Hex::operator = (Hex const &obj)
 {
-  mLocation = location;
+  setDimensions(obj.mOrientation, obj.mWidth, obj.mHeight, obj.mPeakHeight, obj.mLevel);
 
-  GVector newPos;
+  _setHexTexture(obj.mHexTexture);
+  _setSkirtTexture(obj.mSkirtTexture);
+  _setOutlineTexture(obj.mOutlineTexture);
+  _setHighlighTexture(obj.mHighlightTexture);
 
-  newPos.x = (mWidth - 1) * mLocation.getX() + mWidth / 2 * mLocation.getZ();
-  newPos.y = (mHeight - mPeakHeight - 1)  * mLocation.getZ() + height * scale(world).y;
+  setLocation(obj.mLocation);
 
-  pos(newPos);
+  mLevel = obj.mLevel;
+  mOrientation = obj.mOrientation;
 }
 
-void Hex::setHexDimensions(int width, int height, int peakHeight)
+Hex * Hex::clone()
 {
+  Hex * newHex = new Hex(*(this));
+  return newHex;
+}
+
+void Hex::setDimensions(Orientation orientation, int width, int height, int peakHeight, int level)
+{
+  mOrientation = orientation;
   mWidth = width;
   mHeight = height;
   mPeakHeight = peakHeight;
+  mLevel = level;
 }
 
 
-void Hex::setHexTexture(Texture hex)
+void Hex::setLocation(CubeCoord location)
 {
-  if (this->mHexTexture == nullptr) {
-    this->mHexTexture = new Texture();
+  if (mOrientation == vertical) {
+    mLocation = location;
+
+    GVector newPos;
+
+    newPos.x = (mWidth - 1) * mLocation.getX() + mWidth / 2 * mLocation.getZ();
+    newPos.y = (mHeight - mPeakHeight - 1)  * mLocation.getZ() - mLevel * scale(world).y;
+
+    pos(newPos);
+  } else {
+    mLocation = location;
+
+    GVector newPos;
+
+    newPos.x = (mWidth - mPeakHeight - 1)  * mLocation.getX();
+    newPos.y = (mLocation.getZ() + (mLocation.getX() - (mLocation.getX()&1)) / 2 - 1) * (mHeight - 1) + (mHeight / 2) * (mLocation.getX() % 2)  - mLevel * scale(world).y;
+    pos(newPos);
+  }
+}
+
+void Hex::_setHexTexture(const Texture * hexTexture) {
+
+  if (hexTexture == nullptr) {
+    return;
   }
 
-  *(this->mHexTexture) = hex;
-
-  this->mHexTexture->parent(this);
-}
-
-void Hex::setHexSkirtTexture(Texture skirt)
-{
-  if (this->mHexSkirtTexture == nullptr) {
-    this->mHexSkirtTexture = new Texture();
+  if (mHexTexture == nullptr) {
+    mHexTexture = new Texture();
   }
 
-  *(this->mHexSkirtTexture) = skirt;
-
-  this->mHexSkirtTexture->parent(this);
+  *(mHexTexture) = *(hexTexture);
+  mHexTexture->parent(this);
 }
 
-void Hex::draw()
+void Hex::_setSkirtTexture(const Texture * skirtTexture) {
+
+  if (skirtTexture == nullptr) {
+    return;
+  }
+
+  if (mSkirtTexture == nullptr) {
+    mSkirtTexture = new Texture();
+  }
+
+  *(mSkirtTexture) = *(skirtTexture);
+  mSkirtTexture->parent(this);
+}
+
+void Hex::_setOutlineTexture(const Texture * outlineTexture) {
+
+  if (outlineTexture == nullptr) {
+    return;
+  }
+
+  if (mOutlineTexture == nullptr) {
+    mOutlineTexture = new Texture();
+  }
+
+  *(mOutlineTexture) = *(outlineTexture);
+  mOutlineTexture->parent(this);
+}
+
+void Hex::_setHighlighTexture(const Texture * highlightTexture) {
+
+  if (highlightTexture == nullptr) {
+    return;
+  }
+
+  if (mHighlightTexture == nullptr) {
+    mHighlightTexture = new Texture();
+  }
+
+  *(mHighlightTexture) = *(highlightTexture);
+  mHighlightTexture->parent(this);
+}
+
+void Hex::renderBackground()
 {
   if (mHexTexture != nullptr) {
     mHexTexture->render();
   }
-  
-  if (mHexSkirtTexture != nullptr) {
-    mHexSkirtTexture->render();
+
+  if (mSkirtTexture != nullptr) {
+    mSkirtTexture->render();
+  }
+}
+
+void Hex::renderMidground()
+{
+  if (mOutlineTexture != nullptr) {
+    mOutlineTexture->render();
   }
 
-  if (mHighlighted && hexTextureHighlight != nullptr) {
-    hexTextureHighlight->render();
+  if (mHighlightTexture != nullptr) {
+    mHighlightTexture->render();
   }
+
+  if (mHexObject != nullptr) {
+    mHexObject->render();
+  }
+}
+
+void Hex::renderForground()
+{
 
 }
 
-bool Hex::checkCollision(int px, int py)
+void Hex::render()
 {
-  bool collision = false;
-  return collision;
+  renderBackground();
+  renderMidground();
+  renderForground();
+}
+
+bool Hex::checkCollision(int x, int y)
+{
+  GVector mPos = pos(world);
+
+  double difference = pow((mPos.x - x), 2) + pow((mPos.y - y), 2);
+
+  if (difference < pow(((mHeight - 2) * scale(world).y / 2), 2)) {
+    return true;
+  }
+
+  return false;
 }
 
 void Hex::addNeighbor(Hex * neighbor, Direction direction)
@@ -114,17 +229,11 @@ void Hex::update()
 {
   if (InputManager::instance()->getCurrentEvent().type == SDL_MOUSEBUTTONDOWN) {
     GVector mousePos = InputManager::instance()->getCurrentMousePos();
-    GVector myPos = pos(world);
+    GVector mPos = pos(world);
 
-    if (mousePos.x < myPos.x + 20 && mousePos.x > myPos.x - 20 && mousePos.y < myPos.y + 20 && mousePos.y > myPos.y - 20) {
+    if (checkCollision(mousePos.x, mousePos.y)) {
       mHighlighted = true;
-      for (size_t i = North; i <= NorthWest; i++) {
-        Hex * neighbor = mNeighbors.at(i);
-        if (neighbor) {
-          neighbor->setHighlighted(true);
-        }
-      }
-    }
+    };
   }
 }
 
@@ -132,17 +241,13 @@ void Hex::setHighlighted(bool highlighted) {
   this->mHighlighted = highlighted;
 }
 
-Hex & Hex::operator = (Hex const &obj)
+void Hex::setHexObject(HexObject * hexObject)
 {
-  setHexDimensions(obj.mWidth, obj.mHeight, obj.mPeakHeight);
+  mHexObject = hexObject;
+  mHexObject->parent(this);
+}
 
-  if(obj.mHexTexture != nullptr) {
-    setHexTexture(*(obj.mHexTexture));
-  }
-
-  if(obj.mHexSkirtTexture != nullptr) {
-    setHexSkirtTexture(*(obj.mHexSkirtTexture));
-  }
-
-  setLocation(obj.mLocation);
+void Hex::releaseHexObject()
+{
+  mHexObject = nullptr;
 }
