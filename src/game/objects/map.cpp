@@ -43,7 +43,15 @@ void Map::render()
   for(int i = 0; i < 2; i++){
     for(auto & hex : hexs) {
       hex.second->renderBackground();
+    }
+  }
+  for(int i = 0; i < 2; i++){
+    for(auto & hex : hexs) {
       hex.second->renderMidground();
+    }
+  }
+  for(int i = 0; i < 2; i++){
+    for(auto & hex : hexs) {
       hex.second->renderForground();
     }
   }

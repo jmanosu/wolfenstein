@@ -11,7 +11,7 @@ class TempScreen : public Screen {
 
         void render();
         void update();
-
+        void load();
     private:
         Map * mMap;
 };

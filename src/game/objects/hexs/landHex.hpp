@@ -7,7 +7,8 @@
 class LandHex : public Hex {
     public:
         LandHex(std::string imageFile);
-        LandHex(int width, int height, int peakHeight, int level, std::string hexTexture, std::string skirtTexture);
+        LandHex(Hex &, std::string hexTexture, std::string skirtTexture);
+        LandHex(int width, int height, int peakHeight, int level, std::string hexTexture, std::string skirtTexture, std::string highlightTexture);
         ~LandHex();
         Hex * clone();
     protected:

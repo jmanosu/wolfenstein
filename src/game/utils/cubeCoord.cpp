@@ -27,22 +27,22 @@ void CubeCoord::set(int _q, int _r)
 CubeCoord getCubeCoord(Direction direction) {
     switch (direction) {
     case North:
-        return CubeCoord(0, 1);
+        return CubeCoord(0, -1);
         break;    
     case NorthEast:
-        return CubeCoord(1, 0);
-        break;
-    case SouthEast:
         return CubeCoord(1, -1);
         break;
+    case SouthEast:
+        return CubeCoord(1, 0);
+        break;
     case South:
-        return CubeCoord(0, -1);
+        return CubeCoord(0, 1);
         break;
     case SouthWest:
-        return CubeCoord(-1,0);
+        return CubeCoord(-1, 1);
         break;
     case NorthWest:
-        return CubeCoord(-1,1);
+        return CubeCoord(-1, 0);
         break;
     default:
         return CubeCoord(0, 0);

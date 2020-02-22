@@ -26,12 +26,13 @@ Description: header function for Hex
 
 #include "managers/inputManager.hpp"
 
+enum Orientation {
+  vertical = 0,
+  horizontal = 1
+};
+
 class Hex : public GameEntity{
   public:
-    enum Orientation {
-      vertical = 0,
-      horizontal = 1
-    };
 
     Hex();
     Hex(const Hex &hexR);
@@ -48,13 +49,17 @@ class Hex : public GameEntity{
     void _setHexTexture(const Texture *);
     void _setSkirtTexture(const Texture *);
     void _setOutlineTexture(const Texture *);
-    void _setHighlighTexture(const Texture *);
+    void _setHighlightTexture(const Texture *, Direction);
 
     void setHexTexture(const Texture & hexTexture) { _setHexTexture(&(hexTexture)); }
     void setSkirtTexture(const Texture & skirtTexture) { _setSkirtTexture(&(skirtTexture)); }
     void setOutlineTexture(const Texture & outlineTexture) { _setOutlineTexture(&(outlineTexture)); }
-    void setHighlighTexture(const Texture & highlightTexture) { _setHighlighTexture(&(highlightTexture)); } 
+    void setHighlightTexture(const Texture & highlightTexture, Direction direction) { _setHighlightTexture(&(highlightTexture), direction); } 
 
+    Texture * _getHighlightTexture(int i);
+
+    void renderHighlight(Direction);
+    void renderHighlight();
 
     virtual void renderBackground();
     virtual void renderMidground();
@@ -64,12 +69,11 @@ class Hex : public GameEntity{
 
     bool checkCollision(int, int);
     
-
-    
     void addNeighbor(Hex *, Direction);
 
     void update();
 
+    int getHighlighted() { return mHighlighted; }
     void setHighlighted(bool);
     void setLevel(int level) { mLevel = level; }
 
@@ -80,6 +84,8 @@ class Hex : public GameEntity{
     int getX() { return mLocation.getX(); }
     int getY() { return mLocation.getY(); }
     int getZ() { return mLocation.getZ(); }
+
+    Orientation getOrientation() { return mOrientation; }
 
     int getWidth()      { return mWidth;  }
     int getHeight()     { return mHeight; }
@@ -97,6 +103,8 @@ class Hex : public GameEntity{
     Texture * mSkirtTexture;
     Texture * mOutlineTexture;
     Texture * mHighlightTexture;
+
+    std::vector<Texture *>  mHighlightTextures;
 
     std::vector<Hex *> mNeighbors;
 

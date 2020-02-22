@@ -19,7 +19,8 @@ Hex::Hex() :
   mOutlineTexture(nullptr),
   mHighlightTexture(nullptr),
 
-  mNeighbors(int(NorthWest) + 1, 0),
+  mHighlightTextures(int(NorthWest) + 1, nullptr),
+  mNeighbors(int(NorthWest) + 1, nullptr),
 
   mWidth(0),
   mHeight(0),
@@ -30,8 +31,9 @@ Hex::Hex() :
 
   mHexObject(nullptr)
 {
-  for (size_t i = North; i < NorthWest; i++) {
+  for (size_t i = North; i <= NorthWest; i++) {
     mNeighbors.at(i) = nullptr;
+    mHighlightTextures.at(i) = nullptr;
   }
 }
 
@@ -42,7 +44,10 @@ Hex::Hex(const Hex &obj) : Hex()
   _setHexTexture(obj.mHexTexture);
   _setSkirtTexture(obj.mSkirtTexture);
   _setOutlineTexture(obj.mOutlineTexture);
-  _setHighlighTexture(obj.mHighlightTexture);
+
+  for (size_t i = North; i <= NorthWest; i++) {
+    _setHighlightTexture(obj.mHighlightTextures.at(i), (Direction)i);
+  }
 
   setLocation(obj.mLocation);
 
@@ -57,6 +62,10 @@ Hex::~Hex(){
   delete mSkirtTexture;
   delete mOutlineTexture;
   delete mHighlightTexture;
+
+  for (size_t i = North; i <= NorthWest; i++) {
+    delete mHighlightTextures.at(i);
+  }
 }
 
 
@@ -67,7 +76,10 @@ Hex & Hex::operator = (Hex const &obj)
   _setHexTexture(obj.mHexTexture);
   _setSkirtTexture(obj.mSkirtTexture);
   _setOutlineTexture(obj.mOutlineTexture);
-  _setHighlighTexture(obj.mHighlightTexture);
+
+  for (size_t i = North; i <= NorthWest; i++) {
+    _setHighlightTexture(obj.mHighlightTextures.at(i), (Direction)i);
+  }
 
   setLocation(obj.mLocation);
 
@@ -113,8 +125,8 @@ void Hex::setLocation(CubeCoord location)
   }
 }
 
-void Hex::_setHexTexture(const Texture * hexTexture) {
-
+void Hex::_setHexTexture(const Texture * hexTexture)
+{
   if (hexTexture == nullptr) {
     return;
   }
@@ -127,8 +139,8 @@ void Hex::_setHexTexture(const Texture * hexTexture) {
   mHexTexture->parent(this);
 }
 
-void Hex::_setSkirtTexture(const Texture * skirtTexture) {
-
+void Hex::_setSkirtTexture(const Texture * skirtTexture)
+{
   if (skirtTexture == nullptr) {
     return;
   }
@@ -141,8 +153,8 @@ void Hex::_setSkirtTexture(const Texture * skirtTexture) {
   mSkirtTexture->parent(this);
 }
 
-void Hex::_setOutlineTexture(const Texture * outlineTexture) {
-
+void Hex::_setOutlineTexture(const Texture * outlineTexture)
+{
   if (outlineTexture == nullptr) {
     return;
   }
@@ -155,41 +167,60 @@ void Hex::_setOutlineTexture(const Texture * outlineTexture) {
   mOutlineTexture->parent(this);
 }
 
-void Hex::_setHighlighTexture(const Texture * highlightTexture) {
-
+void Hex::_setHighlightTexture(const Texture * highlightTexture, Direction direction)
+{
   if (highlightTexture == nullptr) {
     return;
   }
 
-  if (mHighlightTexture == nullptr) {
-    mHighlightTexture = new Texture();
+  if (mHighlightTextures.at(direction) == nullptr) {
+    mHighlightTextures.at(direction) = new Texture();
   }
 
-  *(mHighlightTexture) = *(highlightTexture);
-  mHighlightTexture->parent(this);
+  *(mHighlightTextures.at(direction)) = *(highlightTexture);
+  mHighlightTextures.at(direction)->parent(this);
+}
+
+Texture * Hex::_getHighlightTexture(int i)
+{
+  return mHighlightTextures.at(i);
+}
+
+void Hex::renderHighlight(Direction direction)
+{
+  if (mHighlightTextures.at(direction) != nullptr) {
+    mHighlightTextures.at(direction)->render();
+  }
+}
+
+void Hex::renderHighlight()
+{
+  for (size_t i = North; i <= NorthWest; i++) {
+    if ((mNeighbors.at(i) != nullptr && mNeighbors.at(i)->getHighlighted() && (i < SouthEast || i > SouthWest)) || mHighlighted) {
+      renderHighlight((Direction)i);
+    }
+  }
 }
 
 void Hex::renderBackground()
 {
-  if (mHexTexture != nullptr) {
-    mHexTexture->render();
-  }
-
   if (mSkirtTexture != nullptr) {
     mSkirtTexture->render();
   }
-}
 
-void Hex::renderMidground()
-{
+  if (mHexTexture != nullptr) {
+    mHexTexture->render();
+  }
+  
   if (mOutlineTexture != nullptr) {
     mOutlineTexture->render();
   }
 
-  if (mHighlightTexture != nullptr) {
-    mHighlightTexture->render();
-  }
+  renderHighlight();
+}
 
+void Hex::renderMidground()
+{
   if (mHexObject != nullptr) {
     mHexObject->render();
   }

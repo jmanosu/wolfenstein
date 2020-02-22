@@ -18,13 +18,32 @@ LandHex::LandHex(std::string imageFile) : Hex()
     mImageFile = imageFile;
 }
 
-LandHex::LandHex(int width, int height, int peakHeight, int level, std::string hexTexture, std::string skirtTexture)
+LandHex::LandHex(Hex & templateHex, std::string hexTexture, std::string skirtTexture)
 {
     TextureCache * textureCache = TextureCache::instance();
 
     _setHexTexture(textureCache->getTexture(hexTexture));
 
     _setSkirtTexture(textureCache->getTexture(skirtTexture));
+
+    for (size_t i = North; i <= NorthWest; i++) {
+        _setHighlightTexture(templateHex._getHighlightTexture(i), (Direction)i);
+    }
+
+    setDimensions(templateHex.getOrientation(), templateHex.getWidth(), templateHex.getHeight(), templateHex.getPeakHeight(), templateHex.getLevel());
+}
+
+LandHex::LandHex(int width, int height, int peakHeight, int level, std::string hexTexture, std::string skirtTexture, std::string highlightTexture)
+{
+    TextureCache * textureCache = TextureCache::instance();
+
+    _setHexTexture(textureCache->getTexture(hexTexture));
+
+    _setSkirtTexture(textureCache->getTexture(skirtTexture));
+
+    for (size_t i = North; i <= NorthWest; i++) {
+        _setHighlightTexture(textureCache->getTexture(highlightTexture), (Direction)i);
+    }
 
     setDimensions(horizontal, width, height, peakHeight, level);
 }
