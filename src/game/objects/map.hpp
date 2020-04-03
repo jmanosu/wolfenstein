@@ -32,21 +32,25 @@ class Map : public GameEntity{
     void init();
     void render();
     void update();
-    void setCenterXY(int, int);
     void handleClick(SDL_Event event);
     void initMapNeighbors();
     void loadMap(std::vector<std::vector<int>>, std::vector<Hex *>);
-    void addHex(CubeCoord, Hex *);\
-    Hex * getHex(int q, int r);
+
+    void addHex(CubeCoord, Hex *);
+    Hex * getHex(CubeCoord);
+
+    void addHexObject(CubeCoord, HexObject *);
+    HexObject * getHexObject(CubeCoord);
+
   private:
     bool compareRenderOrder(Hex *, Hex *);
-  private:
-    int centerX, centerY;
+  private: 
     int boundX, boundY;
     int radius;
+
     std::map<CubeCoord, Hex *> hexs;
-    std::list<Hex *> renderHexList;
-    int mHexHeight, mHexWidth, mHexPeakHeight;
+
+    std::map<CubeCoord, HexObject *> hexObjects;
 };
 
 #endif

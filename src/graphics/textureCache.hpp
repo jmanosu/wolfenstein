@@ -16,6 +16,8 @@ class TextureCache {
         void stashTexture(std::string name, Texture * texture);
         Texture * getTexture(std::string name);
 
+        void loadFile(std::string file);
+
     private:
         TextureCache();
         ~TextureCache();

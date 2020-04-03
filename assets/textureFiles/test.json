@@ -1,0 +1,130 @@
+[
+    {
+        "label" : "GrassHex",
+        "file" : "hexFinalTextures/GrassHex.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "TreeHex",
+        "file" : "hexFinalTextures/TreeHex.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "DesertHex",
+        "file" : "hexFinalTextures/DesertHex.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "WaterHex",
+        "file" : "hexFinalTextures/WaterHex.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "SnowHex",
+        "file" : "hexFinalTextures/SnowHex.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "SnowForestHex",
+        "file" : "hexFinalTextures/SnowForestHex.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "SnowForestHex",
+        "file" : "hexFinalTextures/SnowForestHex.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },  
+    {
+        "label" : "GroundSkirtHex",
+        "file" : "hexFinalTextures/GrassHex.png",
+        "x" : 43,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "OceanSkirtHex",
+        "file" : "hexFinalTextures/WaterHex.png",
+        "x" : 43,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "DesertSkirtHex",
+        "file" : "hexFinalTextures/DesertHex.png",
+        "x" : 43,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "HighlightHex1",
+        "file" : "hexFinalTextures/HighlightTexture.png",
+        "x" : 0,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "HighlightHex2",
+        "file" : "hexFinalTextures/HighlightTexture.png",
+        "x" : 43,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "HighlightHex3",
+        "file" : "hexFinalTextures/HighlightTexture.png",
+        "x" : 86,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "HighlightHex4",
+        "file" : "hexFinalTextures/HighlightTexture.png",
+        "x" : 129,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "HighlightHex5",
+        "file" : "hexFinalTextures/HighlightTexture.png",
+        "x" : 172,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    },
+    {
+        "label" : "HighlightHex6",
+        "file" : "hexFinalTextures/HighlightTexture.png",
+        "x" : 215,
+        "y" : 0,
+        "width" : 43,
+        "height" : 85
+    }
+]

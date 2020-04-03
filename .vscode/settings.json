@@ -45,6 +45,18 @@
         "random": "cpp",
         "string": "cpp",
         "map": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "filesystem": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "ratio": "cpp",
+        "iomanip": "cpp",
+        "thread": "cpp",
+        "typeindex": "cpp",
+        "set": "cpp"
     }
 }

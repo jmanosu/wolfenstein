@@ -21,8 +21,6 @@ Description: The Map class contains a three dimensional array of Wall objects
 Map::Map() : GameEntity(200, 200)
 {
   scale(GVector(3,3));
-  centerX = 200;
-  centerY = 200;
 }
 
 //simple destructor, delets all dynamically allocated variables
@@ -39,23 +37,11 @@ void Map::init()
 
 void Map::render()
 {
-
-  for(int i = 0; i < 2; i++){
-    for(auto & hex : hexs) {
-      hex.second->renderBackground();
-    }
+  for(auto & hex : hexs) {
+    hex.second->renderBackground();\
+    hex.second->renderMidground();
+    hex.second->renderForground();
   }
-  for(int i = 0; i < 2; i++){
-    for(auto & hex : hexs) {
-      hex.second->renderMidground();
-    }
-  }
-  for(int i = 0; i < 2; i++){
-    for(auto & hex : hexs) {
-      hex.second->renderForground();
-    }
-  }
-
 }
 
 void Map::update()
@@ -66,34 +52,13 @@ void Map::update()
     updatedPos.y += InputManager::instance()->getMouseDrag().y;
     pos(updatedPos);
   }
-  for (auto it = hexs.begin(); it != hexs.end(); it++ ) {
-    Hex * hex = it->second;
-    hex->update();
-  }
-}
-
-void Map::setCenterXY(int nextX, int nextY)
-{
-  if (nextX < -boundX) {
-    this->centerX = -boundX;
-  } else if(nextX > boundX + sc_width){
-    this->centerX = boundX + sc_width;
-  } else {
-    this->centerX = nextX;
-  }
-
-  if (nextY < -boundY) {
-    this->centerY = -boundY;
-  } else if(nextY > boundY + sc_height){
-    this->centerY = boundY + sc_height;
-  } else {
-    this->centerY = nextY;
+  for(auto & hex : hexs) {
+    hex.second->update();
   }
 }
 
 void Map::handleClick(SDL_Event event)
 {
-
 }
 
 void Map::initMapNeighbors()
@@ -122,9 +87,6 @@ void Map::loadMap(std::vector<std::vector<int>> map, std::vector<Hex *> mapBindi
       Hex * newHex = mapBindings.at(map[i][j])->clone();
       CubeCoord location = axialToCubeOddVertical(i, j);
       newHex->setLocation(location);
-      if ( i == 3 && j == 3) {
-        newHex->setHexObject(new HexObject());
-      }
       addHex(location, newHex);
     }
   }
@@ -143,14 +105,37 @@ void Map::addHex(CubeCoord location, Hex * hex)
   }
 }
 
-Hex * Map::getHex(int q, int r)
+Hex * Map::getHex(CubeCoord location)
 {
   std::map<CubeCoord, Hex *>::iterator it;
-  it = hexs.find(CubeCoord(q, r));
+  it = hexs.find(location);
+
   if (it != hexs.end()) {
     return it->second;
   } else {
-    return NULL;
+    return nullptr;
+  }
+}
+
+void Map::addHexObject(CubeCoord location, HexObject * hexObject)
+{
+  Hex * hex = getHex(location);
+
+  if (hex != nullptr) {
+    this->hexObjects[location] = hexObject;
+    hex->setHexObject(hexObject);
+  }
+}
+
+HexObject * Map::getHexObject(CubeCoord location)
+{
+  std::map<CubeCoord, HexObject *>::iterator it;
+  it = hexObjects.find(location);
+
+  if (it != hexObjects.end()) {
+    return it->second;
+  } else {
+    return nullptr;
   }
 }
 
