@@ -5,6 +5,11 @@ CubeCoord operator+(const CubeCoord & lhs, const CubeCoord & rhs)
     return CubeCoord(lhs.getX() + rhs.getX(), lhs.getZ() + rhs.getZ());
 }
 
+CubeCoord operator-(const CubeCoord & lhs, const CubeCoord & rhs)
+{
+    return CubeCoord(lhs.getX() - rhs.getX(), lhs.getZ() - rhs.getZ());
+}
+
 bool operator<(const CubeCoord & lhs, const CubeCoord & rhs)
 {
 
@@ -48,6 +53,11 @@ CubeCoord getCubeCoord(Direction direction) {
         return CubeCoord(0, 0);
         break;
     }
+}
+
+Direction getDirection(CubeCoord lhs, CubeCoord rhs)
+{
+    return South;
 }
 
 CubeCoord axialToCubeOddHorizontal(int row, int column)

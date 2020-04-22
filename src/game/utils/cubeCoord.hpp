@@ -23,6 +23,7 @@ class CubeCoord
     CubeCoord() : x(0), y(0), z(0) {}
     CubeCoord(int _q, int _r) : x(_q), y(-_q - _r), z(_r) {}
     friend CubeCoord operator+(const CubeCoord & lhs, const CubeCoord & rhs);
+    friend CubeCoord operator-(const CubeCoord & lhs, const CubeCoord & rhs);
     friend bool operator<(const CubeCoord & lhs, const CubeCoord & rhs);
     int getX() const { return x; }
     int getY() const { return y; }
@@ -44,6 +45,7 @@ enum Direction {
 };
 
 CubeCoord getCubeCoord(Direction direction);
+Direction getDirection(CubeCoord lhs, CubeCoord rhs);
 
 CubeCoord axialToCubeOddHorizontal(int row, int column);
 CubeCoord axialToCubeEvenHorizontal(int row, int column);

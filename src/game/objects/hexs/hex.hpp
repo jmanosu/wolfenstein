@@ -21,6 +21,7 @@ Description: header function for Hex
 
 #include "game/objects/gameEntity.hpp"
 #include "game/objects/hexObject.hpp"
+#include "game/objects/weapon.hpp"
 
 #include "game/utils/cubeCoord.hpp"
 
@@ -79,6 +80,11 @@ class Hex : public GameEntity{
 
     void setHexObject(HexObject * hexObject);
     void releaseHexObject();
+    HexObject * getHexObject();
+
+    //game interaction
+    void applyWeapon(Weapon *);
+
 
     //accessors
     int getX() { return mLocation.getX(); }
@@ -86,6 +92,8 @@ class Hex : public GameEntity{
     int getZ() { return mLocation.getZ(); }
 
     Orientation getOrientation() { return mOrientation; }
+
+    CubeCoord getLocation() { return mLocation; }
 
     int getWidth()      { return mWidth;  }
     int getHeight()     { return mHeight; }

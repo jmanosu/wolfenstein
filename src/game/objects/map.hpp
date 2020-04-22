@@ -16,6 +16,7 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include <vector>
 #include <list>
 #include <tuple>
+
 #include "game/player/player.hpp"
 #include "game/objects/gameEntity.hpp"
 #include "game/objects/hexs/hex.hpp"
@@ -23,15 +24,19 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include "misc/constants.hpp"
 #include "managers/inputManager.hpp"
 #include "graphics/animatedTexture.hpp"
+#include "game/objects/weapon.hpp"
 
 
 class Map : public GameEntity{
   public:
     Map();
     ~Map();
+
     void init();
+
     void render();
     void update();
+
     void handleClick(SDL_Event event);
     void initMapNeighbors();
     void loadMap(std::vector<std::vector<int>>, std::vector<Hex *>);
@@ -41,16 +46,27 @@ class Map : public GameEntity{
 
     void addHexObject(CubeCoord, HexObject *);
     HexObject * getHexObject(CubeCoord);
+    HexObject * getHexObject(ID);
+
+    void moveHexObject(CubeCoord, ID);
+
+    Hex * getSelectedHex();
+    Hex * getHoveredHex();
+    Hex * getClickedHex();
+
+    void applyWeapon(Weapon *, CubeCoord, CubeCoord);
 
   private:
-    bool compareRenderOrder(Hex *, Hex *);
-  private: 
     int boundX, boundY;
     int radius;
 
-    std::map<CubeCoord, Hex *> hexs;
+    std::map<CubeCoord, Hex *> mHexs;
 
-    std::map<CubeCoord, HexObject *> hexObjects;
+    std::map<ID, HexObject *> mHexObjects;
+
+    Hex * mSelectedHex;
+    Hex * mHoveredHex;
+    Hex * mClickedHex;
 };
 
 #endif

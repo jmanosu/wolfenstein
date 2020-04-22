@@ -39,45 +39,67 @@ bool InputManager::keyDown(SDL_EventType code)
 
 void InputManager::update()
 {
-    mPreviousEvent = mCurrentEvent;
-    SDL_PollEvent(&mCurrentEvent);
-    switch (mCurrentEvent.type) {
-        case SDL_QUIT:
-            mQuit = true;
-            break;
-        case SDL_KEYDOWN:
-            handleKeyboardPress(mCurrentEvent.key.keysym.sym);
-            break;
-        case SDL_KEYUP:
-            handleKeyboardRelease(mCurrentEvent.button.button);
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            handleMousePress(mCurrentEvent.button.button);
-            break;
-        case SDL_MOUSEBUTTONUP:
-            handleMouseRelease(mCurrentEvent.button.button);
-            break;
-        case SDL_MOUSEMOTION:
-            handleMouseMotion();
-            break;
-        case SDL_WINDOWEVENT:
-            handleWindowEvent(mCurrentEvent.window.event);
-            break;
-        default:
-            break;
+//    mKeyPressList.erase(mKeyPressList.begin(), mKeyPressList.end());
+
+    while (SDL_PollEvent(&mCurrentEvent)) {
+        switch (mCurrentEvent.type) {
+            case SDL_QUIT:
+                mQuit = true;
+                break;
+            case SDL_KEYDOWN:
+                handleKeyboardPress(mCurrentEvent.key);
+                break;
+            case SDL_KEYUP:
+                handleKeyboardRelease(mCurrentEvent.key);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                handleMousePress(mCurrentEvent.button.button);
+                break;
+            case SDL_MOUSEBUTTONUP:
+                handleMouseRelease(mCurrentEvent.button.button);
+                break;
+            case SDL_MOUSEMOTION:
+                handleMouseMotion();
+                break;
+            case SDL_WINDOWEVENT:
+                handleWindowEvent(mCurrentEvent.window.event);
+                break;
+            default:
+                break;
+        }
     }
 }
 
-void InputManager::handleKeyboardPress(SDL_Keycode event)
+void InputManager::handleKeyboardPress(SDL_KeyboardEvent event)
 {
+    bool found = 0;
+
+    for (int i = 0; i < mKeyPressList.size(); i++) {
+        if (mKeyPressList.at(i).sym == event.keysym.sym) {
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        mKeyPressList.push_back(event.keysym);
+    }
+
+    mKeyMod = event.keysym.mod;
+/*
     switch(event){
         default:
             break;
     }
+*/
 }
 
-void InputManager::handleKeyboardRelease(SDL_Keycode event)
+void InputManager::handleKeyboardRelease(SDL_KeyboardEvent event)
 {
+    for (int i = 0; i < mKeyPressList.size(); i++) {
+        if (mKeyPressList.at(i).sym == event.keysym.sym) {
+            mKeyPressList.erase(mKeyPressList.begin() + i);
+        }
+    }
 
 }
 

@@ -3,6 +3,7 @@
 
 #include "screens/screen.hpp"
 #include "game/objects/map.hpp"
+#include "game/gameplay/battle.hpp"
 
 class TempScreen : public Screen {
     public:
@@ -13,7 +14,7 @@ class TempScreen : public Screen {
         void update();
         void load();
     private:
-        Map * mMap;
+        Battle * mBattle;
 };
 
 #endif

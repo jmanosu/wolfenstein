@@ -196,7 +196,7 @@ void Hex::renderHighlight(Direction direction)
 void Hex::renderHighlight()
 {
   for (size_t i = North; i <= NorthWest; i++) {
-    if ((mNeighbors.at(i) != nullptr && mNeighbors.at(i)->getHighlighted() && (i < SouthEast || i > SouthWest)) || mHighlighted) {
+    if ((mNeighbors.at(i) != nullptr && mNeighbors.at(i)->getHovered() && (i < SouthEast || i > SouthWest)) || getHovered()) {
       renderHighlight((Direction)i);
     }
   }
@@ -258,13 +258,21 @@ void Hex::addNeighbor(Hex * neighbor, Direction direction)
 
 void Hex::update()
 {
-  if (InputManager::instance()->getCurrentEvent().type == SDL_MOUSEBUTTONDOWN) {
-    GVector mousePos = InputManager::instance()->getCurrentMousePos();
-    GVector mPos = pos(world);
+  GVector mousePos = InputManager::instance()->getCurrentMousePos();
+  GVector mPos = pos(world);
 
-    if (checkCollision(mousePos.x, mousePos.y)) {
-      mHighlighted = true;
-    };
+  bool collision = checkCollision(mousePos.x, mousePos.y);
+  if (InputManager::instance()->getCurrentEvent().type == SDL_MOUSEBUTTONDOWN) {
+    if (collision) {
+      setClicked(true);
+    }
+  } else {
+    if (collision) {
+      setHovered(true);
+    } else {
+      setClicked(false);
+      setHovered(false);
+    }
   }
 }
 
@@ -274,11 +282,25 @@ void Hex::setHighlighted(bool highlighted) {
 
 void Hex::setHexObject(HexObject * hexObject)
 {
+  std::cout << "in setHexObject hexObjectID: " << hexObject->id() << std::endl;
   mHexObject = hexObject;
   mHexObject->parent(this);
+  mHexObject->setLocation(mLocation);
 }
 
 void Hex::releaseHexObject()
 {
   mHexObject = nullptr;
+}
+
+HexObject * Hex::getHexObject()
+{
+  return mHexObject;
+}
+
+void Hex::applyWeapon(Weapon * weapon)
+{
+  if (mHexObject != nullptr) {
+    mHexObject->applyWeapon(weapon);
+  }
 }

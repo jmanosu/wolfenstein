@@ -2,9 +2,6 @@
 
 HexObject::HexObject()
 {
-    mHexObjectTexture = new Texture("hexObjects/Mech2.png");
-    mHexObjectTexture->parent(this);
-    this->pos(GVector(3,-7));
 }
 
 HexObject::~HexObject()
@@ -14,10 +11,27 @@ HexObject::~HexObject()
 
 void HexObject::render()
 {
-    mHexObjectTexture->render();
+    if (mHexObjectTexture != nullptr) {
+        mHexObjectTexture->render();
+    }
 }
 
 void HexObject::update()
 {
 
+}
+
+void HexObject::setLocation(CubeCoord location)
+{
+    mLocation = location;
+}
+
+CubeCoord HexObject::getLocation()
+{
+    return mLocation;
+}
+
+void HexObject::applyWeapon(Weapon * weapon)
+{
+    std::cout << "in HEXOBJECT APPLYWEAPON" << std::endl;
 }

@@ -3,6 +3,10 @@
 
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdint>
+
 #include "game/utils/gamingVector.hpp"
 
 class InputManager{
@@ -22,6 +26,9 @@ class InputManager{
         int mDragX, mDragY;
         int mCurrentMouseX, mCurrentMouseY;
 
+        std::vector<SDL_Keysym> mKeyPressList;
+        int mKeyMod;
+
     public:
         static InputManager * instance();
         static void release();
@@ -31,8 +38,8 @@ class InputManager{
 
         void handleMousePress(SDL_Keycode);
         void handleMouseRelease(SDL_Keycode);
-        void handleKeyboardPress(SDL_Keycode);
-        void handleKeyboardRelease(SDL_Keycode);
+        void handleKeyboardPress(SDL_KeyboardEvent);
+        void handleKeyboardRelease(SDL_KeyboardEvent);
         void handleMouseMotion();
         void handleWindowEvent(SDL_Keycode);
 
@@ -40,6 +47,10 @@ class InputManager{
         GVector getMouseDrag() { return GVector(mDragX, mDragY); }
 
         SDL_Event getCurrentEvent() { return mCurrentEvent; }
+
+        SDL_Keysym getKeyPress(int index) { return mKeyPressList.at(index); }
+
+        int getKeyPressCount() { return mKeyPressList.size(); }
 
         bool didQuit() { return mQuit; }
 };
