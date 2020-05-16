@@ -10,8 +10,8 @@ Description: main.cpp creates a game object. Renders it until the isRunning
 
 #include <SDL2/SDL.h>
 #include <iostream>
-#include "game/game.hpp"
-#include "misc/constants.hpp"
+#include "gameplay/game.hpp"
+#include "utils/constants.hpp"
 
 Game * game = NULL;
 

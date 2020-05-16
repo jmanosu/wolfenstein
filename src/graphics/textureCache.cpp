@@ -1,7 +1,8 @@
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>		
-
 #include "textureCache.hpp"
+
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+
 
 namespace pt = boost::property_tree;
 

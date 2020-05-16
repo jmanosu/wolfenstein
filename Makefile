@@ -1,31 +1,40 @@
 CC = g++
 LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
 FLAGS = `sdl2-config --cflags`
-FILES = ./src/main.cpp \
-./src/game/gameplay/battle.cpp \
-./src/game/game.cpp \
-./src/game/objects/gameEntity.cpp \
-./src/game/objects/map.cpp \
-./src/game/objects/hexObject.cpp \
-./src/game/objects/weapon.cpp \
-./src/game/objects/hexs/hex.cpp \
-./src/game/objects/hexs/landHex.cpp \
-./src/game/objects/units/unit.cpp \
-./src/game/objects/units/mech.cpp \
-./src/game/utils/hexGrid.cpp \
-./src/game/utils/idGenerator.cpp \
-./src/game/utils/cubeCoord.cpp \
-./src/game/player/player.cpp \
+FILES = \
+./src/gameplay/battle/battle.cpp \
+./src/gameplay/input/inputManager.cpp \
+./src/gameplay/players/player.cpp \
+./src/gameplay/screens/screen.cpp \
+./src/gameplay/screens/screenManager.cpp \
+./src/gameplay/screens/tempScreen.cpp \
+./src/gameplay/timer/timer.cpp \
+./src/gameplay/game.cpp \
+./src/geometry/boundingBox.cpp \
+./src/geometry/cubeCoord.cpp \
+./src/graphics/textures/animatedTexture.cpp \
+./src/graphics/textures/texture.cpp \
+./src/graphics/assetManager.cpp \
 ./src/graphics/graphics.cpp \
-./src/graphics/texture.cpp \
-./src/graphics/animatedTexture.cpp \
 ./src/graphics/textureCache.cpp \
-./src/managers/assetManager.cpp \
-./src/managers/inputManager.cpp \
-./src/managers/screenManager.cpp \
-./src/misc/timer.cpp \
-./src/screens/screen.cpp \
-./src/screens/tempScreen.cpp \
+./src/objects/map/hexEffects/hexEffect.cpp \
+./src/objects/map/hexObjects/units/mech.cpp \
+./src/objects/map/hexObjects/units/unit.cpp \
+./src/objects/map/hexObjects/hexObject.cpp \
+./src/objects/map/hexs/battleHex.cpp \
+./src/objects/map/hexs/hex.cpp \
+./src/objects/map/hexs/landHex.cpp \
+./src/objects/map/weapons/weapon.cpp \
+./src/objects/map/battleMap.cpp \
+./src/objects/map/map.cpp \
+./src/objects/map/mapUtils.cpp \
+./src/objects/widgets/button.cpp \
+./src/objects/widgets/widget.cpp \
+./src/objects/gameEntity.cpp \
+./src/utils/idGenerator.cpp \
+./src/utils/jsonUtils.cpp \
+./src/main.cpp
+
 
 build: $(FILES)
-	$(CC) -I ./src $(FILES) $(FLAGS) $(LIBS)
+	$(CC) -g -I ./src $(FILES) $(FLAGS) $(LIBS)

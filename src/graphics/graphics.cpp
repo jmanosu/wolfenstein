@@ -119,6 +119,11 @@ SDL_Renderer * Graphics::getRenderer()
   return mRenderer;
 }
 
+SDL_Window * Graphics::getWindow()
+{
+  return mWindow;
+}
+
 SDL_Texture * Graphics::loadTexture(std::string imgPath)
 {
   return IMG_LoadTexture(mRenderer, imgPath.c_str());
@@ -163,6 +168,22 @@ void Graphics::drawPoint(int x, int y)
 void Graphics::drawPoint(GVector vector)
 {
   SDL_RenderDrawPoint(mRenderer, vector.x, vector.y);
+}
+
+void Graphics::drawRectangle(int x, int y, int w, int h, bool fill)
+{
+  SDL_Rect rectangle;
+
+  rectangle.x = x;
+  rectangle.y = y;
+  rectangle.w = w;
+  rectangle.h = h;
+
+  if (fill) {
+    SDL_RenderFillRect(mRenderer, &rectangle);
+  } else {
+    SDL_RenderDrawRect(mRenderer, &rectangle);
+  }
 }
 
 void Graphics::setColor(int r, int g, int b, double a)

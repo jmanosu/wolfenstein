@@ -6,15 +6,17 @@ Last Edit: 10/13/2018
 Description: header function for graphics.hpp
 */
 
-#ifndef GRAPHICS
-#define GRAPHICS
+#ifndef GRAPHICS_HPP
+#define GRAPHICS_HPP
 
 #include <iostream>
 #include <map>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "game/utils/gamingVector.hpp"
+
+#include "geometry/gamingVector.hpp"
 
 class Graphics{
     public:
@@ -26,6 +28,8 @@ class Graphics{
         void clear();
 
         SDL_Renderer * getRenderer();
+        SDL_Window * getWindow();
+
         SDL_Texture * loadTexture(std::string);
         SDL_Texture * createTextTexture(TTF_Font * font, std::string text, SDL_Color color = {.r = 0, .g = 0, .b = 0, .a = 0});
 
@@ -35,6 +39,8 @@ class Graphics{
         void drawLine(int, int, int, int);
         void drawPoint(int, int);
         void drawPoint(GVector);
+
+        void drawRectangle(int, int, int, int, bool);
         
         void setColor(int, int, int, double);
 

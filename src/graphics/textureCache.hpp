@@ -1,12 +1,13 @@
-#ifndef TEXTURELOADER
-#define TEXTURELOADER
+#ifndef TEXTURECACHE_HPP
+#define TEXTURECACHE_HPP
 
 #include <iostream>
 #include <cmath>
 #include <vector>
 #include <list>
 #include <tuple>
-#include "texture.hpp"
+
+#include "graphics/textures/texture.hpp"
 
 class TextureCache {
     public:
