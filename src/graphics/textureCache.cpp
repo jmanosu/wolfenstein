@@ -33,12 +33,18 @@ TextureCache::~TextureCache()
   for(auto & texture : mTextures) {
     delete texture.second;
   }
+
+  for(auto & texture: mAnimatedTexture) {
+    delete texture.second;
+  }
 }
 
 void TextureCache::stashTexture(std::string name, Texture * texture)
 {
-  if (mTextures[name] != nullptr) {
-    delete mTextures[name];
+  std::map<std::string, Texture *>::iterator it = mTextures.find(name);
+
+  if (it != mTextures.end()) {
+    delete it->second;
   }
 
   mTextures[name] = texture;
@@ -46,9 +52,7 @@ void TextureCache::stashTexture(std::string name, Texture * texture)
 
 Texture * TextureCache::getTexture(std::string name)
 { 
-  std::map<std::string, Texture *>::iterator it;
-
-  it = mTextures.find(name);
+  std::map<std::string, Texture *>::iterator it = mTextures.find(name);
 
   if (it != mTextures.end()) {
     return it->second;
@@ -57,41 +61,25 @@ Texture * TextureCache::getTexture(std::string name)
   }
 }
 
-
-void print(boost::property_tree::ptree const& pt)
+void TextureCache::stashAnimatedTexture(std::string name, AnimatedTexture * texture)
 {
-    using boost::property_tree::ptree;
-    ptree::const_iterator end = pt.end();
-    for (ptree::const_iterator it = pt.begin(); it != end; ++it) {
-        std::cout << it->first << ": " << it->second.get_value<std::string>() << std::endl;
-        print(it->second);
-    }
+  std::map<std::string, AnimatedTexture *>::iterator it = mAnimatedTexture.find(name);
+
+  if (it != mAnimatedTexture.end()) {
+    delete it->second;
+  }
+
+  mAnimatedTexture[name] = texture;
 }
 
-void TextureCache::loadFile(std::string file)
+AnimatedTexture * TextureCache::getAnimatedTexture(std::string name)
 {
-  std::string fullPath = SDL_GetBasePath();
-  fullPath.append("assets/" + file);
+  std::map<std::string, AnimatedTexture *>::iterator it = mAnimatedTexture.find(name);
 
-  pt::ptree tree;
-  pt::read_json(fullPath, tree);
-
-  for (pt::ptree::value_type & texture : tree) {
-    std::string label = texture.second.get<std::string>("label");
-    std::string file = texture.second.get<std::string>("file");
-
-    int x = texture.second.get<int>("x", -1);
-    int y = texture.second.get<int>("y", -1);
-
-    int width = texture.second.get<int>("width", -1);
-    int height = texture.second.get<int>("height", -1);
-
-    if (label != "" && file != "") {
-      if (x == -1 || y == -1 || width == -1 || height == -1) {
-        stashTexture(label, new Texture(file));
-      } else {
-        stashTexture(label, new Texture(file, x, y, width, height));
-      }
-    }
+  if (it != mAnimatedTexture.end()) {
+    return it->second;
+  } else {
+    return nullptr;
   }
+
 }

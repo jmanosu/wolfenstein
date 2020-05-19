@@ -190,3 +190,9 @@ void Graphics::setColor(int r, int g, int b, double a)
 {
   SDL_SetRenderDrawColor(mRenderer, r, g, b, a);
 }
+
+void Graphics::setTextureColor(SDL_Texture * texture, int red, int green, int blue, int alpha)
+{
+  SDL_SetTextureColorMod(texture, red, green, blue);
+  SDL_SetTextureAlphaMod(texture, alpha);
+}

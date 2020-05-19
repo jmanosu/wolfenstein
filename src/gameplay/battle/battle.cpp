@@ -2,16 +2,17 @@
 #include "graphics/textureCache.hpp"
 #include "objects/map/hexObjects/units/mech.hpp"
 
-#include "utils/jsonUtils.hpp"
+#include "objects/map/mapUtils.hpp"
+
+#include "graphics/graphicUtils.hpp"
 
 
 Battle::Battle()
 {
 
-  TextureCache * textureCache = TextureCache::instance();
+    TextureCache * textureCache = TextureCache::instance();
 
-  textureCache->loadFile("textureFiles/test.json");
-
+    GraphicUtils::loadTextureFile("textureFiles/test.json", textureCache);
 
     mMap = JsonUtils::loadBattleMap("maps/test.json", textureCache);
 
@@ -87,15 +88,17 @@ void Battle::update()
     switch (mMode) {
         case placement:
             {
-                Hex * selected = mMap->getClickedHex();
+
+                BattleHex * selected = mMap->getClickedHex();
                 if (selected != nullptr) {
+                    selected->setBorderColor(255, 0, 0, 250);
 //                    mMap->moveHexObject(selected->getLocation(), tempMechID);
                 }
             }
             break;
         case attack:
             {
-                Hex * clickedHex = mMap->getClickedHex();
+                BattleHex * clickedHex = mMap->getClickedHex();
                 if (clickedHex != nullptr) {
                     if (mSelectedWeapon != nullptr) {
                         mMap->applyWeapon(mSelectedWeapon, clickedHex->getLocation(), clickedHex->getLocation());
@@ -121,7 +124,7 @@ void Battle::update()
             break;
         case move:
             {
-                Hex * selected = mMap->getClickedHex();
+                BattleHex * selected = mMap->getClickedHex();
                 if (selected != nullptr) {
                     if (mSelectedUnit == nullptr) {
                         mSelectedUnit = mMap->getHexObject(selected->getLocation());

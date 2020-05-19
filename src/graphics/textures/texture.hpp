@@ -28,16 +28,23 @@ class Texture : public GameEntity {
         int getHeight() { return mHeight; }
         int getWidth() { return mWidth; }
 
+        void setColor(int red, int green, int blue, int alpha = -1);
+
         Texture clip(int x, int y, int width, int height);
     
         void update();
         void render();
         void render(int, int, int, int);
+
     protected:
         SDL_Texture * mTexture;
         Graphics * mGraphics;
+
+        int mRed, mBlue, mGreen, mAlpha;
         int mHeight, mWidth;
+
         SDL_Rect mRenderRect, mClipRect;
+
         bool mClipped;
 
 };

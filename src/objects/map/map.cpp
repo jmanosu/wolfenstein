@@ -11,7 +11,7 @@ Description: The Map class contains a three dimensional array of Wall objects
   Ray Casting Link: https://en.wikipedia.org/wiki/Ray_casting
 
 */
-#ifndef MAP_CPP
+/*#ifndef MAP_CPP
 #define MAP_CPP
 
 #include "map.hpp"
@@ -189,4 +189,4 @@ Hex * Map::getHoveredHex()
   return mHoveredHex;
 }
 
-#endif
+#endif*/

@@ -1,8 +1,10 @@
 #include "mech.hpp"
 
-Mech::Mech()
+Mech::Mech() :
+    mIdleTexture(nullptr)
 {
     AnimatedTexture temp("hexObjects/Mech2Animated.png", 0, 0, 25, 27, 4, 500, AnimatedTexture::horizontal);
+    temp.setColor(255,0,0,255);
     setIdleTexture(&temp);
     this->pos(GVector(3,-7));
     mWeapon = new Weapon();

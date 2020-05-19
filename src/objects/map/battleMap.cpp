@@ -58,7 +58,7 @@ void BattleMap::applyWeapon(Weapon * weapon, CubeCoord origin, CubeCoord target)
       break;
     case mortor:
       {
-        Hex * targetHex = getHex(target);
+        BattleHex * targetHex = getHex(target);
         if (targetHex != nullptr) {
           targetHex->applyWeapon(weapon);
         } 

@@ -8,6 +8,7 @@
 #include <tuple>
 
 #include "graphics/textures/texture.hpp"
+#include "graphics/textures/animatedTexture.hpp"
 
 class TextureCache {
     public:
@@ -17,7 +18,8 @@ class TextureCache {
         void stashTexture(std::string name, Texture * texture);
         Texture * getTexture(std::string name);
 
-        void loadFile(std::string file);
+        void stashAnimatedTexture(std::string name, AnimatedTexture * texture);
+        AnimatedTexture * getAnimatedTexture(std::string name);
 
     private:
         TextureCache();
@@ -26,6 +28,7 @@ class TextureCache {
         static TextureCache * sInstance;
 
         std::map<std::string, Texture *> mTextures;
+        std::map<std::string, AnimatedTexture *> mAnimatedTexture;
 };
 
 #endif

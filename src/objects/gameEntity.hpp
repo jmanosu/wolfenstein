@@ -21,7 +21,6 @@ class GameEntity {
 
         GameEntity * mParent;
 
-        bool mClicked, mPressed, mHovered;
     public:
         GameEntity(float x = 0.0f, float y = 0.0f);
         ~GameEntity();
@@ -45,14 +44,6 @@ class GameEntity {
         
         virtual void update();
         virtual void render();
-
-        void setClicked(bool);
-        void setPressed(bool);
-        void setHovered(bool);
-
-        bool getClicked();
-        bool getPressed();
-        bool getHovered();
 };
 
 #endif

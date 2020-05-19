@@ -12,8 +12,9 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 
 #include "objects/map/map.hpp"
 #include "objects/map/hexObjects/units/unit.hpp"
+#include "objects/map/hexs/battleHex.hpp"
 
-class BattleMap : public Map{
+class BattleMap : public Map<BattleHex> {
   public:
     BattleMap();
     ~BattleMap();

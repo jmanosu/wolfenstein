@@ -1,17 +1,18 @@
 #include "texture.hpp"
 
-Texture::Texture()
+Texture::Texture() : GameEntity()
 {
-    GameEntity();
-    
     mGraphics = nullptr;
     mTexture = nullptr;
+
+    mRed = 255;
+    mGreen = 255;
+    mBlue = 255;
+    mAlpha = 255;
 }
 
-Texture::Texture(std::string path)
+Texture::Texture(std::string path) : Texture()
 {
-    GameEntity();
-
     mGraphics = Graphics::instance();
     mTexture  = assetManager::instance()->getTexture(path);
 
@@ -23,10 +24,8 @@ Texture::Texture(std::string path)
     mClipRect.h = mHeight;
 }
 
-Texture::Texture(std::string path, int x, int y, int width, int height)
+Texture::Texture(std::string path, int x, int y, int width, int height) : Texture()
 {
-    GameEntity();
-
     mGraphics = Graphics::instance();
     mTexture  = assetManager::instance()->getTexture(path);
 
@@ -41,17 +40,14 @@ Texture::Texture(std::string path, int x, int y, int width, int height)
     mClipRect.h = height;
 }
 
-Texture::Texture(std::string text, std::string filePath, int size, SDL_Color color)
+Texture::Texture(std::string text, std::string filePath, int size, SDL_Color color) : Texture()
 {
-    GameEntity();
-
     mGraphics = Graphics::instance();
     mTexture  = assetManager::instance()->getTextTexture(text, filePath, size, color);
 
     mClipped = false;
 
     SDL_QueryTexture(mTexture, NULL, NULL, &mWidth, &mHeight);
-
 }
 
 Texture::~Texture()
@@ -60,10 +56,15 @@ Texture::~Texture()
     mTexture  = nullptr;
 }
 
-void Texture::render(int x, int y, int width, int height)
+void Texture::setColor(int red, int green, int blue, int alpha)
 {
-    SDL_Rect renderRect = {x, y, width, height}; 
-    mGraphics->drawTexture(mTexture, nullptr, &renderRect);
+    mRed = red;
+    mGreen = green;
+    mBlue = blue;
+
+    if (alpha != -1) {
+        mAlpha = alpha;
+    }
 }
 
 void Texture::render()
@@ -77,8 +78,27 @@ void Texture::render()
     mRenderRect.w = static_cast<int>(mWidth * scaller.x);
     mRenderRect.h = static_cast<int>(mHeight * scaller.y);
 
+    mGraphics->setTextureColor(mTexture, mRed, mGreen, mBlue, mAlpha);
     mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
+    mGraphics->setTextureColor(mTexture);
 }
+
+void Texture::render(int r, int g, int b, int a)
+{
+    GVector pos = this->pos(world);
+    GVector scaller = this->scale(world);
+
+    mRenderRect.x = static_cast<int>(pos.x - 0.5f * mWidth * scaller.x);
+    mRenderRect.y = static_cast<int>(pos.y - 0.5f * mHeight * scaller.y);
+
+    mRenderRect.w = static_cast<int>(mWidth * scaller.x);
+    mRenderRect.h = static_cast<int>(mHeight * scaller.y);
+
+    mGraphics->setTextureColor(mTexture, r, g, b, a);
+    mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
+    mGraphics->setTextureColor(mTexture);
+}
+
 
 void Texture::update()
 {

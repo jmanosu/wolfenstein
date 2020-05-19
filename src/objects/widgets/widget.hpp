@@ -1,13 +1,13 @@
 #ifndef WIDGET_HPP
 #define WIDGET_HPP
 
-#include "objects/gameEntity.hpp"
+#include "objects/interactableEntity.hpp"
 
 #include "geometry/boundingBox.hpp"
 
 #include "gameplay/input/inputManager.hpp"
 
-class Widget : public GameEntity {
+class Widget : public InteractableEntity {
     public:
         Widget();
         ~Widget();

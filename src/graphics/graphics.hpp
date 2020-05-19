@@ -18,6 +18,13 @@ Description: header function for graphics.hpp
 
 #include "geometry/gamingVector.hpp"
 
+struct RGBA {
+    int r = 255;
+    int g = 255;
+    int b = 255;
+    int a = 255;
+};
+
 class Graphics{
     public:
         static Graphics * instance();
@@ -43,6 +50,7 @@ class Graphics{
         void drawRectangle(int, int, int, int, bool);
         
         void setColor(int, int, int, double);
+        void setTextureColor(SDL_Texture *, int red = 255, int green = 255, int blue = 255, int alpha = 255);
 
     public:
         static const int screenHeight = 1000;

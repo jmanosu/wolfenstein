@@ -16,14 +16,13 @@ FILES = \
 ./src/graphics/textures/texture.cpp \
 ./src/graphics/assetManager.cpp \
 ./src/graphics/graphics.cpp \
+./src/graphics/graphicUtils.cpp \
 ./src/graphics/textureCache.cpp \
 ./src/objects/map/hexEffects/hexEffect.cpp \
 ./src/objects/map/hexObjects/units/mech.cpp \
 ./src/objects/map/hexObjects/units/unit.cpp \
 ./src/objects/map/hexObjects/hexObject.cpp \
 ./src/objects/map/hexs/battleHex.cpp \
-./src/objects/map/hexs/hex.cpp \
-./src/objects/map/hexs/landHex.cpp \
 ./src/objects/map/weapons/weapon.cpp \
 ./src/objects/map/battleMap.cpp \
 ./src/objects/map/map.cpp \
@@ -31,6 +30,7 @@ FILES = \
 ./src/objects/widgets/button.cpp \
 ./src/objects/widgets/widget.cpp \
 ./src/objects/gameEntity.cpp \
+./src/objects/interactableEntity.cpp \
 ./src/utils/idGenerator.cpp \
 ./src/utils/jsonUtils.cpp \
 ./src/main.cpp

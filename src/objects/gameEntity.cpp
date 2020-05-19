@@ -17,8 +17,6 @@ GameEntity::GameEntity(float x, float y)
     mActive = false;
 
     mParent = nullptr;
-
-    mClicked = false, mPressed = false, mHovered = false;
 }
 
 GameEntity::~GameEntity()
@@ -112,34 +110,4 @@ void GameEntity::update()
 void GameEntity::render()
 {
     
-}
-
-void GameEntity::setClicked(bool clicked)
-{
-    mClicked = clicked;
-}
-
-void GameEntity::setPressed(bool pressed)
-{
-    mPressed = pressed;
-}
-
-void GameEntity::setHovered(bool hovered)
-{
-    mHovered = hovered;
-}
-
-bool GameEntity::getClicked()
-{
-    return mClicked;
-}
-
-bool GameEntity::getPressed()
-{
-    return mPressed;
-}
-
-bool GameEntity::getHovered()
-{
-    return mHovered;
 }
