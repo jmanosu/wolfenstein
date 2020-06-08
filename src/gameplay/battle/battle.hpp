@@ -7,6 +7,9 @@
 
 #include "objects/widgets/button.hpp"
 
+#include "graphics/textures/texturePath.hpp"
+
+
 enum BATTLEMODE {
     placement = 0,
     attack,
@@ -40,6 +43,10 @@ class Battle : GameEntity {
         Weapon * mSelectedWeapon;
 
         Button * tempButton;
+
+        HexCollection tempHexCollection;
+
+        TexturePath  mPathTexture;
 };
 
 #endif

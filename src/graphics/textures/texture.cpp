@@ -78,9 +78,28 @@ void Texture::render()
     mRenderRect.w = static_cast<int>(mWidth * scaller.x);
     mRenderRect.h = static_cast<int>(mHeight * scaller.y);
 
-    mGraphics->setTextureColor(mTexture, mRed, mGreen, mBlue, mAlpha);
-    mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
-    mGraphics->setTextureColor(mTexture);
+    if (mGraphics != nullptr) {
+        mGraphics->setTextureColor(mTexture, mRed, mGreen, mBlue, mAlpha);
+        mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
+        mGraphics->setTextureColor(mTexture);
+    }
+}
+
+void Texture::render(GVector pos)
+{
+    GVector scaller = this->scale(world);
+
+    mRenderRect.x = static_cast<int>(pos.x - 0.5f * mWidth * scaller.x);
+    mRenderRect.y = static_cast<int>(pos.y - 0.5f * mHeight * scaller.y);
+
+    mRenderRect.w = static_cast<int>(mWidth * scaller.x);
+    mRenderRect.h = static_cast<int>(mHeight * scaller.y);
+
+    if (mGraphics != nullptr) {
+        mGraphics->setTextureColor(mTexture, mRed, mGreen, mBlue, mAlpha);
+        mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
+        mGraphics->setTextureColor(mTexture);
+    }
 }
 
 void Texture::render(int r, int g, int b, int a)
@@ -94,9 +113,11 @@ void Texture::render(int r, int g, int b, int a)
     mRenderRect.w = static_cast<int>(mWidth * scaller.x);
     mRenderRect.h = static_cast<int>(mHeight * scaller.y);
 
-    mGraphics->setTextureColor(mTexture, r, g, b, a);
-    mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
-    mGraphics->setTextureColor(mTexture);
+    if (mGraphics != nullptr) {
+        mGraphics->setTextureColor(mTexture, r, g, b, a);
+        mGraphics->drawTexture(mTexture, &mClipRect, &mRenderRect);
+        mGraphics->setTextureColor(mTexture);
+    }
 }
 
 

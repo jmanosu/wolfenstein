@@ -68,6 +68,9 @@ template <typename _Hex> class Hex : public InteractableEntity {
     int getPeakHeight() { return mPeakHeight; }
     int getLevel()      { return mLevel;  }
 
+    void setVisited(bool);
+    bool getVisted();
+
   protected:
 
     Orientation mOrientation;
@@ -79,6 +82,8 @@ template <typename _Hex> class Hex : public InteractableEntity {
     int mHeight, mWidth, mPeakHeight, mLevel;
 
     HexObject * mHexObject;
+
+    bool mVisited;
 };
 
 
@@ -94,7 +99,9 @@ template <class _Hex> Hex<_Hex>::Hex() :
   mPeakHeight(0),
   mLevel(0),
 
-  mHexObject(nullptr)
+  mHexObject(nullptr),
+
+  mVisited(false)
 {
   for (size_t i = North; i <= NorthWest; i++) {
     mNeighbors.at(i) = nullptr;
@@ -225,6 +232,16 @@ template <class _Hex> void Hex<_Hex>::releaseHexObject()
 template <class _Hex> HexObject * Hex<_Hex>::getHexObject()
 {
   return mHexObject;
+}
+
+template <class _Hex> void Hex<_Hex>::setVisited(bool visited)
+{
+  mVisited = visited;
+}
+
+template <class _Hex> bool Hex<_Hex>::getVisted()
+{
+  return mVisited;
 }
 
 #endif

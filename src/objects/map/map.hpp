@@ -31,8 +31,6 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 
 #include "graphics/textures/animatedTexture.hpp"
 
-
-
 template <typename Hex> class Map : public GameEntity{
   public:
     Map();
@@ -43,7 +41,6 @@ template <typename Hex> class Map : public GameEntity{
     void render();
     void update();
 
-    void handleClick(SDL_Event event);
     void initMapNeighbors();
 
     void addHex(CubeCoord, Hex *);
@@ -62,8 +59,6 @@ template <typename Hex> class Map : public GameEntity{
   protected:
     int boundX, boundY;
     int radius;
-
-    std::map<CubeCoord, Hex *> mHexs;
 
     std::map<ID, HexObject *> mHexObjects;
 
@@ -87,6 +82,7 @@ template <class Hex> Map<Hex>::Map() : GameEntity(200, 200)
 //simple destructor, delets all dynamically allocated variables
 template <class Hex> Map<Hex>::~Map()
 {
+
 }
 
 template <class Hex> void Map<Hex>::init()
@@ -129,10 +125,6 @@ template <class Hex> void Map<Hex>::update()
   if (!clicked) {
     mClickedHex = nullptr;
   }
-}
-
-template <class Hex> void Map<Hex>::handleClick(SDL_Event event)
-{
 }
 
 template <class Hex> void Map<Hex>::initMapNeighbors()

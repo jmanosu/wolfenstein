@@ -1,10 +1,14 @@
 #include "battle.hpp"
+
 #include "graphics/textureCache.hpp"
+
 #include "objects/map/hexObjects/units/mech.hpp"
 
 #include "objects/map/mapUtils.hpp"
 
 #include "graphics/graphicUtils.hpp"
+
+#include "geometry/line.hpp"
 
 
 Battle::Battle()
@@ -38,6 +42,11 @@ Battle::Battle()
     mSelectedUnit = nullptr;
     mSelectedWeapon = nullptr;
 
+    mPathTexture.setPath(new Line(1,50));
+    mPathTexture.setLowerX(80);
+    mPathTexture.setUpperX(300);
+    mPathTexture.setDX(40);
+    mPathTexture.setTexture(Texture("animatedDot.png"));
 }
 
 Battle::Battle(BattleMap * map)
@@ -55,6 +64,7 @@ void Battle::render()
     SDL_SetRenderDrawColor(Graphics::instance()->getRenderer(), 200, 200, 74, 255);
     tempButton->render();
     SDL_SetRenderDrawColor(Graphics::instance()->getRenderer(), 5, 42, 74, 255);
+    mPathTexture.render();
 }
 
 void Battle::update()
@@ -91,7 +101,12 @@ void Battle::update()
 
                 BattleHex * selected = mMap->getClickedHex();
                 if (selected != nullptr) {
-                    selected->setBorderColor(255, 0, 0, 250);
+                        tempHexCollection.setHighlight(false);
+                        tempHexCollection = mMap->getHexReachableCollection(4, selected->getLocation());
+                        tempHexCollection.setHighlight(true);
+//                    mMap->modifyHexReachable(2, selected->getLocation(), [&](BattleHex * hex) {
+//                        std::cout << "test" << std::endl;
+//                    });
 //                    mMap->moveHexObject(selected->getLocation(), tempMechID);
                 }
             }
@@ -119,7 +134,10 @@ void Battle::update()
             break;
         case effect:
             {
-
+                BattleHex * selected = mMap->getClickedHex();
+                if (selected != nullptr) {
+                    tempHexCollection.drawPath(selected->getLocation());
+                }
             }
             break;
         case move:

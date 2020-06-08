@@ -12,7 +12,10 @@ FILES = \
 ./src/gameplay/game.cpp \
 ./src/geometry/boundingBox.cpp \
 ./src/geometry/cubeCoord.cpp \
+./src/geometry/line.cpp \
+./src/geometry/path.cpp \
 ./src/graphics/textures/animatedTexture.cpp \
+./src/graphics/textures/texturePath.cpp \
 ./src/graphics/textures/texture.cpp \
 ./src/graphics/assetManager.cpp \
 ./src/graphics/graphics.cpp \
@@ -23,9 +26,9 @@ FILES = \
 ./src/objects/map/hexObjects/units/unit.cpp \
 ./src/objects/map/hexObjects/hexObject.cpp \
 ./src/objects/map/hexs/battleHex.cpp \
+./src/objects/map/hexs/hexCollection.cpp \
 ./src/objects/map/weapons/weapon.cpp \
 ./src/objects/map/battleMap.cpp \
-./src/objects/map/map.cpp \
 ./src/objects/map/mapUtils.cpp \
 ./src/objects/widgets/button.cpp \
 ./src/objects/widgets/widget.cpp \

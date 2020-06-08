@@ -8,9 +8,7 @@
 #include "graphics/textureCache.hpp"
 
 namespace JsonUtils {
-
-    BattleMap * loadBattleMap(std::string, TextureCache *);
-    
+    BattleMap * loadBattleMap(std::string, TextureCache *);    
 }
 
 

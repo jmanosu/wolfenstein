@@ -34,6 +34,7 @@ class Texture : public GameEntity {
     
         void update();
         void render();
+        void render(GVector);
         void render(int, int, int, int);
 
     protected:

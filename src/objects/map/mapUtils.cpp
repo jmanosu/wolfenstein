@@ -80,8 +80,17 @@ BattleHex * decodeHex(pt::ptree::value_type * jsonHex, TextureCache * textureCac
             std::string SouthWestHighlight = jsonHex->second.get<std::string>("SouthWestHighlight");
             newHex->setBorderTexture(textureCache->getTexture(SouthWestHighlight), SouthWest);
 
+            int i = 0;
+            for (pt::ptree::value_type & pathTexture : jsonHex->second.get_child("PathTextures")) {
+                newHex->setPathTexture(*(textureCache->getTexture(pathTexture.second.data())), (Direction)i);
+                i++;
+            }
+
             std::string TileTexture = jsonHex->second.get<std::string>("TileTexture");
             newHex->setHexTexture(textureCache->getTexture(TileTexture));
+            
+            std::string OverlayTexture = jsonHex->second.get<std::string>("OverlayTexture");
+            newHex->setHexOverlayTexture(textureCache->getTexture(OverlayTexture));
 
             std::string SkirtTexture = jsonHex->second.get<std::string>("SkirtTexture");
             newHex->setSkirtTexture(textureCache->getTexture(SkirtTexture));

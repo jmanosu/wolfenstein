@@ -22,6 +22,12 @@ struct GVector {
         return (float)sqrt(x*x + y*y);
     }
 
+    void Scale(float scaler)
+    {
+        x = x * scaler;
+        y = y * scaler;
+    }
+
     GVector Normalized() {
         float magnitude = Magnitude();
         return GVector(x / magnitude, y / magnitude);
@@ -42,6 +48,11 @@ inline GVector RotateVector(GVector& vec, float angle)
 {
     float radAngle = (float)(angle*DEG_TO_RAD);
     return GVector((float)(vec.x * cos(radAngle) - vec.y * sin(radAngle)), (float)(vec.x * sin(radAngle) + vec.y * cos(radAngle)));
+}
+
+inline GVector dotProduct(const GVector& lhs, const GVector & rhs)
+{
+    return lhs.x * rhs.y + lhs.y * rhs.x;
 }
 
 #endif

@@ -16,6 +16,13 @@ class BattleHex : public PixelHex<BattleHex> {
         void applyWeapon(Weapon *);
 
         void update();
+
+        void setHighlight(bool);
+    private:
+        RGBA mFocusColor;
+        RGBA mHighlightColor;
+
+        bool mHighlight;
 };
 
 #endif

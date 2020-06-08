@@ -152,7 +152,9 @@ SDL_Texture * Graphics::createTextTexture(TTF_Font * font, std::string text, SDL
 
 void Graphics::drawTexture(SDL_Texture * texture, SDL_Rect * clipRect, SDL_Rect * renderRect)
 {
-  SDL_RenderCopy(mRenderer, texture, clipRect, renderRect);
+  if (texture != nullptr) {
+    SDL_RenderCopy(mRenderer, texture, clipRect, renderRect);
+  }
 }
 
 void Graphics::drawLine(int x1, int y1, int x2, int y2)
@@ -193,6 +195,8 @@ void Graphics::setColor(int r, int g, int b, double a)
 
 void Graphics::setTextureColor(SDL_Texture * texture, int red, int green, int blue, int alpha)
 {
-  SDL_SetTextureColorMod(texture, red, green, blue);
-  SDL_SetTextureAlphaMod(texture, alpha);
+  if (texture != nullptr) {
+    SDL_SetTextureColorMod(texture, red, green, blue);
+    SDL_SetTextureAlphaMod(texture, alpha);
+  }
 }

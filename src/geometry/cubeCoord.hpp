@@ -9,6 +9,7 @@ Description: header function for CubeCoord
 #define CUBECOORD_HPP
 
 #include <iostream>
+#include <cmath>
 #include <map>
 
 class CubeCoord
@@ -26,6 +27,9 @@ class CubeCoord
     friend CubeCoord operator+(const CubeCoord & lhs, const CubeCoord & rhs);
     friend CubeCoord operator-(const CubeCoord & lhs, const CubeCoord & rhs);
     friend bool operator<(const CubeCoord & lhs, const CubeCoord & rhs);
+    friend bool operator==(const CubeCoord & lhs, const CubeCoord & rhs);
+    friend bool operator!=(const CubeCoord & lhs, const CubeCoord & rhs);
+
 
     int getX() const { return x; }
     int getY() const { return y; }
@@ -48,10 +52,13 @@ enum Direction {
 
 CubeCoord getCubeCoord(Direction direction);
 Direction getDirection(CubeCoord lhs, CubeCoord rhs);
+Direction getDirectionOpposite(Direction direction);
 
 CubeCoord axialToCubeOddHorizontal(int row, int column);
 CubeCoord axialToCubeEvenHorizontal(int row, int column);
 CubeCoord axialToCubeOddVertical(int row, int column);
 CubeCoord axialToCubeEvenVertical(int row, int column);
+
+double cubeDistance(CubeCoord, CubeCoord);
 
 #endif
