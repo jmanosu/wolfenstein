@@ -5,20 +5,22 @@
 
 #include "objects/map/hexs/battleHex.hpp"
 
+#include "objects/map/battleLocation.hpp"
+
 class HexCollectionEntry {
     public:
         HexCollectionEntry();
-        HexCollectionEntry(BattleHex *, int);
+        HexCollectionEntry(BattleTile *, int);
         ~HexCollectionEntry();
 
-        void setBattleHex(BattleHex *);
-        BattleHex * getBattleHex();
+        void setBattleHex(BattleTile *);
+        BattleTile * getBattleHex();
 
         void setDistance(int);
         int getDistance();
 
     private:
-        BattleHex * mBattleHex;
+        BattleTile * mBattleHex;
         int mDistance;
 };
 
@@ -28,10 +30,11 @@ class HexCollection {
         HexCollection();
         ~HexCollection();
 
-        void addHex(CubeCoord, HexCollectionEntry);
+        void addTile(CubeCoord, HexCollectionEntry);
         void remove(CubeCoord);
 
-        HexCollectionEntry getHex(CubeCoord);
+        bool checkEntry(CubeCoord);
+        HexCollectionEntry getEntry(CubeCoord);
 
         void setHighlight(bool);
         bool getHighlight();

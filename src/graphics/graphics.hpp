@@ -49,7 +49,7 @@ class Graphics{
 
         void drawRectangle(int, int, int, int, bool);
         
-        void setColor(int, int, int, double);
+        void setColor(int, int, int, double = 1);
         void setTextureColor(SDL_Texture *, int red = 255, int green = 255, int blue = 255, int alpha = 255);
 
     public:

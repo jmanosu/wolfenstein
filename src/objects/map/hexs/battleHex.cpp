@@ -27,9 +27,7 @@ BattleHex * BattleHex::clone()
 
 void BattleHex::applyWeapon(Weapon * weapon)
 {
-  if (mHexObject != nullptr) {
-    mHexObject->applyWeapon(weapon);
-  }
+  
 }
 
 void BattleHex::update()

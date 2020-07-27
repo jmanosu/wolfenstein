@@ -4,6 +4,7 @@
 #include "objects/map/battleMap.hpp"
 
 #include "objects/map/hexs/battleHex.hpp"
+#include "objects/map/battleLocation.hpp"
 
 #include "graphics/textureCache.hpp"
 

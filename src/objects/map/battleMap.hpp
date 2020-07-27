@@ -17,7 +17,9 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 #include "objects/map/hexs/battleHex.hpp"
 #include "objects/map/hexs/hexCollection.hpp"
 
-class BattleMap : public Map<BattleHex> {
+#include "objects/map/battleLocation.hpp"
+
+class BattleMap : public HexMap<BattleTile> {
   public:
     BattleMap();
     ~BattleMap();
@@ -25,16 +27,19 @@ class BattleMap : public Map<BattleHex> {
     void render();
 
     void addUnit(CubeCoord, Unit *);
+    void setHexObject(CubeCoord, HexObject *);
     Unit * getUnit(ID);
 
     void applyWeapon(Weapon *, CubeCoord, CubeCoord);
 
-    template<typename Func> void modifyHexCoordRange(int, CubeCoord, Func);
-
-    template<typename Func> void modifyHexReachable(int, CubeCoord, Func);
+    template<typename Valid, typename Modify> void modifyHexCoordRange(int, CubeCoord, Valid, Modify);
+    template<typename Valid, typename Modify> void modifyHexReachable(int, CubeCoord, Valid, Modify);
 
     HexCollection getHexRangeCollection(int, CubeCoord);
     HexCollection getHexReachableCollection(int, CubeCoord);
+
+    HexObject * getHexObject(CubeCoord) { return nullptr; }
+    void moveHexObject(CubeCoord, CubeCoord);
 
   private:
     std::map<ID, Unit *> mHexUnits;

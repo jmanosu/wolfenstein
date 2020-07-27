@@ -1,8 +1,6 @@
 #ifndef LINE_HPP
 #define LINE_HPP
 
-#include "geometry/gamingVector.hpp"
-
 #include "geometry/path.hpp"
 
 class Line : public Path {
@@ -14,8 +12,14 @@ class Line : public Path {
         double getOutput(double);
 
         GVector getInterval(double, int);
+
+        void render();
+        void render(Texture *, int);
+
+        void setStart(GVector);
+        void setEnd(GVector, SPACE = world);
+
     private:
-        GVector mBegin;
         GVector mEnd;
 };
 

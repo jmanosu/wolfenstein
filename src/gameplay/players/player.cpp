@@ -17,22 +17,36 @@ Player::~Player(){}
 
 void Player::addUnit(Unit * unit)
 {
-  if (mUnits[unit->id()] != nullptr) {
-    mUnits[unit->id()] = unit;
-  } else {
-    mUnits[unit->id()] = unit;
-  }
+  _units.push_back(unit);
 }
 
-Unit * Player::getUnit(unsigned int id)
+Unit * Player::getUnit(unsigned int index)
 {
-  std::map<unsigned int, Unit *>::iterator it;
-  it = mUnits.find(id);
-
-  if (it != mUnits.end()) {
-    return it->second;
-  } else {
-    std::cout << "returning null" << std::endl;
+  if (index > _units.size()) {
     return nullptr;
   }
+
+  return _units.at(index);
+}
+
+Unit * Player::getUnplacedUnit()
+{
+  for (int i = 0; i < _units.size(); i++) {
+    if (_units.at(i) != nullptr && !_units.at(i)->getPlaced()) {
+      return _units.at(i);
+    }
+  }
+
+  return nullptr;
+}
+
+bool Player::setupFinished()
+{
+  for (int i = 0; i < _units.size(); i++) {
+    if (_units.at(i) != nullptr && !_units.at(i)->getPlaced()) {
+      return false;
+    }
+  }
+
+  return true;
 }

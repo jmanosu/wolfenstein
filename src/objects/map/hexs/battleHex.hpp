@@ -1,7 +1,7 @@
 #ifndef BATTLEHEX_HPP
 #define BATTLEHEX_HPP
 
-#include "objects/map/hexs/pixelHexs/pixelHex.hpp"
+#include "objects/map/hexs/pixelHex.hpp"
 
 
 class BattleHex : public PixelHex<BattleHex> {

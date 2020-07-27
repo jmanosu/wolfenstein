@@ -31,195 +31,224 @@ Description: header file for map. Map has a 3 dimensional array of wall objects
 
 #include "graphics/textures/animatedTexture.hpp"
 
-template <typename Hex> class Map : public GameEntity{
-  public:
-    Map();
-    ~Map();
+#include "objects/map/hexLocation.hpp"
 
-    void init();
+template <class HexTile> class HexMap : public GameEntity {
+  public:
+    HexMap();
+    ~HexMap();
 
     void render();
     void update();
 
-    void initMapNeighbors();
+    HexTile * getHexTile(CubeCoord);
 
-    void addHex(CubeCoord, Hex *);
-    Hex * getHex(CubeCoord);
+    HexTile * generateHexTile(CubeCoord location, int depth = 0);
+    
+    void setHexTile(CubeCoord location, int depth, HexTile * tile);
+    void setHexTileLocation(CubeCoord, HexTile *);
+    void setHexTileDepth(int, HexTile *);
 
-    void addHexObject(CubeCoord, HexObject *);
-    HexObject * getHexObject(CubeCoord);
-    HexObject * getHexObject(ID);
+    void setNeighbors(CubeCoord);
 
-    void moveHexObject(CubeCoord, ID);
+    HexTile * getPressedTile();
+    HexTile * getHoveredTile();
+    HexTile * getClickedTile();
 
-    Hex * getSelectedHex();
-    Hex * getHoveredHex();
-    Hex * getClickedHex();
+    CubeCoord getDirection(HexSide);
+
+    enum TileOrientation {
+      vertical = 0,
+      horizontal = 1
+    };
 
   protected:
-    int boundX, boundY;
-    int radius;
+    HexGrid2<HexTile> _HexGrid;
 
-    std::map<ID, HexObject *> mHexObjects;
+    HexTile * _selectedTile;
+    HexTile * _hoveredTile;
+    HexTile * _clickedTile;
 
-    Hex * mSelectedHex;
-    Hex * mHoveredHex;
-    Hex * mClickedHex;
+    TileOrientation _tileOrientation;
 
-    HexGrid<Hex *> mHexGrid;
+    int _width, _height, _peak;
+
+    int _depthDefault = 3;
 };
 
-// constructor for Map object
-template <class Hex> Map<Hex>::Map() : GameEntity(200, 200)
+template <class HexTile> HexMap<HexTile>::HexMap() : GameEntity(),
+  _selectedTile(nullptr),
+  _hoveredTile(nullptr),
+  _clickedTile(nullptr),
+
+  _tileOrientation(TileOrientation::horizontal),
+
+  _width(43),
+  _height(33),
+  _peak(13)
 {
   scale(GVector(3,3));
-
-  mSelectedHex = nullptr;
-  mClickedHex = nullptr;
-  mHoveredHex = nullptr;
+  pos(GVector(300,300));
 }
 
-//simple destructor, delets all dynamically allocated variables
-template <class Hex> Map<Hex>::~Map()
+template <class HexTile> HexMap<HexTile>::~HexMap()
 {
-
-}
-
-template <class Hex> void Map<Hex>::init()
-{
-}
-
-template <class Hex> void Map<Hex>::render()
-{
-  for(auto & hex : mHexGrid) {
-    hex.second->render();
+  for(typename std::pair<const CubeCoord, HexTile *> & hexTile : _HexGrid) {
+    delete hexTile.second;
   }
 }
 
-template <class Hex> void Map<Hex>::update()
+template <class HexTile> void HexMap<HexTile>::render()
 {
-  if (InputManager::instance()->mouseDown(SDL_BUTTON(SDL_BUTTON_LEFT))) {
-    GVector updatedPos = pos();
-//    updatedPos.x = InputManager::instance()->getMouseX();
-//    updatedPos.y = InputManager::instance()->getMouseY();
-    pos(updatedPos);
+  for(typename std::pair<const CubeCoord, HexTile *> & hexTile : _HexGrid) {
+    hexTile.second->render();
   }
+}
 
-  bool clicked = 0;
+template <class HexTile> void HexMap<HexTile>::update()
+{
+  _hoveredTile = nullptr;
+  _clickedTile = nullptr;
+  _selectedTile = nullptr;
+  
+  for(typename std::pair<const CubeCoord, HexTile *> & hexTile : _HexGrid) {
+    hexTile.second->update();
 
-  mHoveredHex = nullptr;
-  mClickedHex = nullptr;
-  for(auto & hex : mHexGrid) {
-    hex.second->update();
-    if (hex.second->getClicked()) {
-      clicked = 1;
-
-      mSelectedHex = hex.second;
-      mClickedHex = hex.second;
+    if (hexTile.second->getHovered()) {
+      _hoveredTile = hexTile.second;
     }
-    if (hex.second->getHovered()) {
-      mHoveredHex = hex.second;
+
+    if (hexTile.second->getClicked()) {
+      _clickedTile = hexTile.second;
     }
-  }
 
-  if (!clicked) {
-    mClickedHex = nullptr;
-  }
-}
-
-template <class Hex> void Map<Hex>::initMapNeighbors()
-{
-  for(auto & hex : mHexGrid) {
-    for (size_t i = North; i <= NorthWest; i++) {      
-      CubeCoord neighborLocation = hex.first + getCubeCoord(Direction(i));
-      Hex * neighborHex = getHex(neighborLocation);
-      if(neighborHex != nullptr) {
-        hex.second->addNeighbor(neighborHex, Direction(i));
-      } 
+    if (hexTile.second->getPressed()) {
+      _selectedTile = hexTile.second;
     }
   }
 }
 
-template <class Hex> void Map<Hex>::addHex(CubeCoord location, Hex * hex)
+template <class HexTile> HexTile * HexMap<HexTile>::getHexTile(CubeCoord location)
 {
-  if (hex != nullptr) {
-    hex->parent(this);
-    hex->setLocation(location);
-    mHexGrid.add(location, hex);
+  return _HexGrid.get(location);
+}
+
+template <class HexTile> HexTile * HexMap<HexTile>::generateHexTile(CubeCoord location, int depth)
+{
+  HexTile * hexTile = _HexGrid.get(location);
+  if (hexTile == nullptr) {
+    hexTile = new HexTile();
+    setHexTile(location, depth, hexTile);
+    return hexTile;
   }
 }
 
-template <class Hex> Hex * Map<Hex>::getHex(CubeCoord location)
+template <class HexTile> void HexMap<HexTile>::setHexTile(CubeCoord location, int depth, HexTile * hexTile)
 {
-  return mHexGrid.get(location);
+  hexTile->parent(this);
+  hexTile->setLocation(location);
+  hexTile->setDepth(0);
+
+  _HexGrid.set(location, hexTile);
+
+  setHexTileLocation(location, hexTile);
+  setHexTileDepth(depth, hexTile);
+
+  setNeighbors(location);
 }
 
-template <class Hex> void Map<Hex>::addHexObject(CubeCoord location, HexObject * hexObject)
+template <class HexTile> void HexMap<HexTile>::setHexTileLocation(CubeCoord location, HexTile * hexTile)
 {
-  Hex * hex = getHex(location);
+  int x = location.getX();
+  int z = location.getZ();
 
-  if (hex != nullptr && hexObject != nullptr) {
-    this->mHexObjects[hexObject->id()] = hexObject;
-    hex->releaseHexObject();
-    hex->setHexObject(hexObject);
-  }
-}
+  if (_tileOrientation == TileOrientation::vertical) {
+    GVector newPos;
 
-template <class Hex> HexObject * Map<Hex>::getHexObject(CubeCoord location)
-{
-  Hex * hex = getHex(location);
+    newPos.x = (_width - 1) * x + _width / 2 * z;
+    newPos.y = (_height - _peak - 1)  * z;
 
-  if (hex != nullptr) {
-    return hex->getHexObject();
+    hexTile->pos(newPos);
   } else {
-    return nullptr;
+    GVector newPos;
+
+    newPos.x = (_width - _peak - 1)  * x;
+    newPos.y = (z + (x - (x & 1)) / 2 - 1) * (_height - 1) + (_height / 2) * (x % 2);
+
+    hexTile->pos(newPos);
   }
 }
 
-template <class Hex> HexObject * Map<Hex>::getHexObject(ID id)
+template <class HexTile> void HexMap<HexTile>::setHexTileDepth(int depth, HexTile * tile)
 {
-  std::map<ID, HexObject *>::iterator it;
-  it = mHexObjects.find(id);
+  GVector newPos = tile->pos(local);
 
-  if (it != mHexObjects.end()) {
-    return it->second;
-  } else {
-    return nullptr;
-  }
+  newPos.y -= tile->getDepth() * _depthDefault + depth * _depthDefault;
+
+  tile->pos(newPos);
+
+  tile->setDepth(depth);
 }
 
-template <class Hex> void Map<Hex>::moveHexObject(CubeCoord location, ID id)
+template <class HexTile> void HexMap<HexTile>::setNeighbors(CubeCoord location)
 {
-  Hex * hex = getHex(location);
-  HexObject * hexObject = getHexObject(id);
+  HexTile * hexTile = getHexTile(location);
 
-  if (hex != nullptr && hexObject != nullptr) {
-    CubeCoord oldLocation = hexObject->getLocation();
-    Hex * oldHex = getHex(oldLocation);
+  for (HexSide i = 0; i < 6; i++) {      
+    CubeCoord neighborLocation = location + getDirection(i);
+    HexTile * neighborHexTile = getHexTile(neighborLocation);
 
-    if (oldHex != nullptr) {
-      oldHex->releaseHexObject();
+    if(neighborHexTile != nullptr) {
+      neighborHexTile->setNeighbor((i + 3) % 6, hexTile);
     }
 
-    hex->releaseHexObject();
-    hex->setHexObject(hexObject);
+    if (hexTile != nullptr) {
+      hexTile->setNeighbor(i, neighborHexTile);
+    }
   }
-
 }
 
-template <class Hex> Hex * Map<Hex>::getSelectedHex()
+template <class HexTile> HexTile * HexMap<HexTile>::getPressedTile()
 {
-  return mSelectedHex;
+  return _selectedTile;
 }
 
-template <class Hex> Hex * Map<Hex>::getClickedHex()
+template <class HexTile> HexTile * HexMap<HexTile>::getHoveredTile()
 {
-  return mClickedHex;
+  return _hoveredTile;
 }
 
-template <class Hex> Hex * Map<Hex>::getHoveredHex()
+template <class HexTile> HexTile * HexMap<HexTile>::getClickedTile()
 {
-  return mHoveredHex;
+  return _clickedTile;
+}
+
+template <class HexTile> CubeCoord HexMap<HexTile>::getDirection(HexSide side)
+{
+  switch (side)
+  {
+    case 0:
+      return CubeCoord(0, -1);
+      break;
+    case 1:
+      return CubeCoord(1, -1);
+      break;
+    case 2:
+      return CubeCoord(1, 0);
+      break;
+    case 3:
+      return CubeCoord(0, 1);
+      break;
+    case 4:
+      return CubeCoord(-1, 1);
+      break;
+    case 5:
+      return CubeCoord(-1, 0);
+      break;
+    default:
+      return CubeCoord(0, 0);
+      break;
+  }
 }
 
 #endif

@@ -19,6 +19,9 @@ class HexObject : public GameEntity {
         void setLocation(CubeCoord);
         CubeCoord getLocation();
 
+        void setPlaced(bool);
+        bool getPlaced();
+
         virtual void applyWeapon(Weapon *);
 
     private:
@@ -26,6 +29,8 @@ class HexObject : public GameEntity {
     protected:
         Texture * mHexObjectTexture;
         CubeCoord mLocation;
+
+        bool _placed;
 
 };
 

@@ -28,6 +28,7 @@ FILES = \
 ./src/objects/map/hexs/battleHex.cpp \
 ./src/objects/map/hexs/hexCollection.cpp \
 ./src/objects/map/weapons/weapon.cpp \
+./src/objects/map/battleLocation.cpp \
 ./src/objects/map/battleMap.cpp \
 ./src/objects/map/mapUtils.cpp \
 ./src/objects/widgets/button.cpp \

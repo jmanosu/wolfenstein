@@ -20,17 +20,13 @@ Description: header function for Hex
 #include "graphics/textures/texture.hpp"
 
 #include "objects/interactableEntity.hpp"
-#include "objects/map/hexObjects/hexObject.hpp"
 #include "objects/map/weapons/weapon.hpp"
 
 #include "geometry/cubeCoord.hpp"
 
 #include "gameplay/input/inputManager.hpp"
 
-enum Orientation {
-  vertical = 0,
-  horizontal = 1
-};
+typedef uint8_t HexSide;
 
 template <typename _Hex> class Hex : public InteractableEntity {
   public:
@@ -43,8 +39,8 @@ template <typename _Hex> class Hex : public InteractableEntity {
 
     _Hex * clone();
 
-    void setDimensions(Orientation orientation, int width, int height, int peakHeight, int level);
-    void setLocation(CubeCoord location);
+    void setDimensions(int width, int height, int peakHeight);
+    void setLocation(CubeCoord location, int depth = 0);
 
     bool checkCollision(int, int);
     
@@ -53,55 +49,35 @@ template <typename _Hex> class Hex : public InteractableEntity {
 
     void update();
 
-    void setLevel(int level) { mLevel = level; }
-
-    HexObject * getHexObject();
-    void setHexObject(HexObject * hexObject);
-    void releaseHexObject();
-
-    Orientation getOrientation() { return mOrientation; }
+    void setDepth(int depth) { _depth = depth; }
 
     CubeCoord getLocation() { return mLocation; }
 
     int getWidth()      { return mWidth;  }
     int getHeight()     { return mHeight; }
     int getPeakHeight() { return mPeakHeight; }
-    int getLevel()      { return mLevel;  }
-
-    void setVisited(bool);
-    bool getVisted();
+    int getDepth()      { return _depth;  }
 
   protected:
-
-    Orientation mOrientation;
 
     CubeCoord mLocation;
 
     std::vector<_Hex *> mNeighbors;
 
-    int mHeight, mWidth, mPeakHeight, mLevel;
-
-    HexObject * mHexObject;
-
-    bool mVisited;
+    int mHeight, mWidth, mPeakHeight, _depth;
 };
 
 
 
 template <class _Hex> Hex<_Hex>::Hex() :
   mLocation(0,0),
-  mOrientation(horizontal),
 
   mNeighbors(int(NorthWest) + 1, nullptr),
 
   mWidth(0),
   mHeight(0),
   mPeakHeight(0),
-  mLevel(0),
-
-  mHexObject(nullptr),
-
-  mVisited(false)
+  _depth(0)
 {
   for (size_t i = North; i <= NorthWest; i++) {
     mNeighbors.at(i) = nullptr;
@@ -110,12 +86,11 @@ template <class _Hex> Hex<_Hex>::Hex() :
 
 template <class _Hex> Hex<_Hex>::Hex(const Hex &obj) : Hex()
 {
-  setDimensions(obj.mOrientation, obj.mWidth, obj.mHeight, obj.mPeakHeight, obj.mLevel);
+  setDimensions(obj.mWidth, obj.mHeight, obj.mPeakHeight);
 
-  setLocation(obj.mLocation);
+  setLocation(obj.mLocation, obj._depth);
 
-  mLevel = obj.mLevel;
-  mOrientation = obj.mOrientation;
+  _depth = obj._depth;
 }
 
 
@@ -125,48 +100,29 @@ template <class _Hex> Hex<_Hex>::~Hex(){
 
 template <class _Hex> Hex<_Hex> & Hex<_Hex>::operator = (const Hex<_Hex> &obj)
 {
-  setDimensions(obj.mOrientation, obj.mWidth, obj.mHeight, obj.mPeakHeight, obj.mLevel);
+  setDimensions(obj.mWidth, obj.mHeight, obj.mPeakHeight);
 
-  setLocation(obj.mLocation);
+  setLocation(obj.mLocation, obj._depth);
 
-  mLevel = obj.mLevel;
-  mOrientation = obj.mOrientation;
+  _depth = obj._depth;
 }
 
 template <class _Hex> _Hex * Hex<_Hex>::clone() {
   return nullptr;
 }
 
-template <class _Hex> void  Hex<_Hex>::setDimensions(Orientation orientation, int width, int height, int peakHeight, int level)
+template <class _Hex> void  Hex<_Hex>::setDimensions(int width, int height, int peakHeight)
 {
-  mOrientation = orientation;
   mWidth = width;
   mHeight = height;
   mPeakHeight = peakHeight;
-  mLevel = level;
 }
 
 
-template <class _Hex> void Hex<_Hex>::setLocation(CubeCoord location)
+template <class _Hex> void Hex<_Hex>::setLocation(CubeCoord location, int depth)
 {
-  if (mOrientation == vertical) {
-    mLocation = location;
-
-    GVector newPos;
-
-    newPos.x = (mWidth - 1) * mLocation.getX() + mWidth / 2 * mLocation.getZ();
-    newPos.y = (mHeight - mPeakHeight - 1)  * mLocation.getZ() - mLevel * scale(world).y;
-
-    pos(newPos);
-  } else {
-    mLocation = location;
-
-    GVector newPos;
-
-    newPos.x = (mWidth - mPeakHeight - 1)  * mLocation.getX();
-    newPos.y = (mLocation.getZ() + (mLocation.getX() - (mLocation.getX()&1)) / 2 - 1) * (mHeight - 1) + (mHeight / 2) * (mLocation.getX() % 2)  - mLevel * scale(world).y;
-    pos(newPos);
-  }
+  mLocation = location;
+  _depth = depth;
 }
 
 
@@ -211,37 +167,6 @@ template <class _Hex> void Hex<_Hex>::update()
       setHovered(true);
     }
   }
-
-  if (mHexObject != nullptr) {
-    mHexObject->update();
-  }
-}
-
-template <class _Hex> void Hex<_Hex>::setHexObject(HexObject * hexObject)
-{
-  mHexObject = hexObject;
-  mHexObject->parent(this);
-  mHexObject->setLocation(mLocation);
-}
-
-template <class _Hex> void Hex<_Hex>::releaseHexObject()
-{
-  mHexObject = nullptr;
-}
-
-template <class _Hex> HexObject * Hex<_Hex>::getHexObject()
-{
-  return mHexObject;
-}
-
-template <class _Hex> void Hex<_Hex>::setVisited(bool visited)
-{
-  mVisited = visited;
-}
-
-template <class _Hex> bool Hex<_Hex>::getVisted()
-{
-  return mVisited;
 }
 
 #endif

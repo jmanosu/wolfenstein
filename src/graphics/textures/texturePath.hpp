@@ -5,7 +5,7 @@
 
 #include "geometry/path.hpp"
 
-class TexturePath {
+class TexturePath : public GameEntity {
     public:
         TexturePath();
         ~TexturePath();
@@ -15,19 +15,13 @@ class TexturePath {
         void setTexture(const Texture &);
 
         void setPath(Path *);
-        
-        void setDX(double);
-        void setLowerX(double);
-        void setUpperX(double);
 
-
-
+        void setStart(GVector);
+        void setEnd(GVector);
     private:
         Path * mPath;
 
         Texture mTexture;
-
-        double mDX, mLowerX, mUpperX;
 };
 
 #endif

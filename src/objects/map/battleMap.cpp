@@ -1,35 +1,36 @@
 #include "battleMap.hpp"
 
-// constructor for Map object
-BattleMap::BattleMap()
+BattleMap::BattleMap() :
+  HexMap()
 {
-  scale(GVector(3,3));
-
-  mSelectedHex = nullptr;
-  mClickedHex = nullptr;
-  mHoveredHex = nullptr;
 }
 
-//simple destructor, delets all dynamically allocated variables
 BattleMap::~BattleMap()
 {
-
 }
 
 void BattleMap::render()
 {
-  for(auto & hex : mHexGrid) {
-    hex.second->renderBackground();
-    hex.second->renderMidground();
-    hex.second->renderForground();
-  }
+  HexMap::render();
 }
 
 
 void BattleMap::addUnit(CubeCoord location, Unit * unit)
 {
+  if (unit == nullptr) {
+    return;
+  }
+
   this->mHexUnits[unit->id()] = unit;
-  addHexObject(location, unit);
+
+  getHexTile(location)->setHexObject(unit);
+}
+
+void BattleMap::setHexObject(CubeCoord location, HexObject * hexObject)
+{
+  BattleTile * tile = getHexTile(location);
+  tile->releaseHexObject();
+  tile->setHexObject(hexObject);
 }
 
 Unit * BattleMap::getUnit(ID id)
@@ -52,65 +53,63 @@ void BattleMap::applyWeapon(Weapon * weapon, CubeCoord origin, CubeCoord target)
     case projectile:
       break;
     case mortor:
-      {
-        BattleHex * targetHex = getHex(target);
-        if (targetHex != nullptr) {
-          targetHex->applyWeapon(weapon);
-        } 
-      }
       break;
     default:
       break;
     }
 }
 
-template<typename Func> void BattleMap::modifyHexCoordRange(int range, CubeCoord location, Func function)
+template<typename Valid, typename Modify> void BattleMap::modifyHexCoordRange(int range, CubeCoord location, Valid valid, Modify modify)
 {
   for (int q = -range; q <= range; q++) {
     for (int r = std::max(-range, -q - range); r <= std::min(range, -q + range); r++) {
-      BattleHex * hex = getHex(CubeCoord(q + location.getQ(), r + location.getR()));
-      if (hex != nullptr) {
-        function(hex, std::abs(q));
+      CubeCoord newLocation = CubeCoord(q + location.getQ(), r + location.getR());
+      BattleTile * tile = getHexTile(newLocation);
+      if (tile != nullptr && valid(tile, std::abs(q))) {
+        modify(tile, std::abs(q));
       }
     }
   }
 }
 
-template<typename Func> void BattleMap::modifyHexReachable(int range, CubeCoord location, Func function)
+template<typename Valid, typename Modify> void BattleMap::modifyHexReachable(int range, CubeCoord location, Valid valid, Modify modify)
 {
   range += 1;
 
-  modifyHexCoordRange(range, location, 
-    [&](BattleHex * hex, int distance) {
-      hex->setVisited(false);
+  modifyHexCoordRange(range, location,
+    [&](BattleTile *, int distance) {
+      return true;
+    },
+    [&](BattleTile * tile, int distance) {
+      tile->setVisited(false);
     }
   );
 
-  std::vector<std::vector<BattleHex *>> fringes(2);
+  std::vector<std::vector<BattleTile *>> fringes(2);
 
-  BattleHex * startHex = getHex(location);
-  startHex->setVisited(true);
+  BattleTile * startTile = getHexTile(location);
 
-  if (startHex == nullptr) {
+  if (startTile == nullptr) {
     return;
   }
 
-  fringes.at(0).push_back(startHex);
+  startTile->setVisited(true);
+  fringes.at(0).push_back(startTile);
 
   for (int i = 0; i < range; i++) {
     while (fringes.at(i % 2).size() > 0) {
-      BattleHex * hex = fringes.at(i % 2).back();
-      function(hex, i);
+      BattleTile * tile = fringes.at(i % 2).back();
+      modify(tile, i);
 
       if (i+1 < range) {
-        for (size_t d = North; d <= NorthWest; d++) {
-          BattleHex * neighbor = hex->getNeighbor((Direction)d);
+        for (HexSide j = 0; j < 6; j++) {
+          BattleTile * neighbor = tile->getNeighbor(j);
 
           if (neighbor == nullptr) {
             continue;
           }
 
-          if (!neighbor->getVisted() && neighbor->getLevel() == hex->getLevel()) {
+          if (!neighbor->getVisted() && valid(tile, neighbor)) {
             fringes.at((i+1) % 2).push_back(neighbor);
             neighbor->setVisited(true);
           }
@@ -120,9 +119,12 @@ template<typename Func> void BattleMap::modifyHexReachable(int range, CubeCoord 
     }
   }
 
-  modifyHexCoordRange(range, location, 
-    [&](BattleHex * hex, int distance) {
-      hex->setVisited(false);
+  modifyHexCoordRange(range, location,
+    [&](BattleTile *, int distance) {
+      return true;
+    },
+    [&](BattleTile * tile, int distance) {
+      tile->setVisited(false);
     }
   );
 }
@@ -132,9 +134,12 @@ HexCollection BattleMap::getHexRangeCollection(int range, CubeCoord location)
   HexCollection hexCollection;
 
   modifyHexCoordRange(range, location,
-    [&](BattleHex * battleHex, int distance){
-      HexCollectionEntry hexCollectionEntry(battleHex, distance);
-      hexCollection.addHex(location, hexCollectionEntry);
+    [&](BattleTile *, int distance) {
+      return true;
+    },
+    [&](BattleTile * battleTile, int distance){
+      HexCollectionEntry hexCollectionEntry(battleTile, distance);
+      hexCollection.addTile(battleTile->getLocation(), hexCollectionEntry);
     }
   );
 
@@ -148,11 +153,28 @@ HexCollection BattleMap::getHexReachableCollection(int range, CubeCoord location
   hexCollection.setCenter(location);
 
   modifyHexReachable(range, location,
-    [&](BattleHex * battleHex, int distance){
-      HexCollectionEntry hexCollectionEntry(battleHex, distance);
-      hexCollection.addHex(battleHex->getLocation(), hexCollectionEntry);
+    [&](BattleTile * tile, BattleTile * neighbor){
+      return tile->getDepth() == neighbor->getDepth();
+    },
+    [&](BattleTile * battleTile, int distance){
+      HexCollectionEntry hexCollectionEntry(battleTile, distance);
+      hexCollection.addTile(battleTile->getLocation(), hexCollectionEntry);
     }
   );
 
   return hexCollection;
+}
+
+void BattleMap::moveHexObject(CubeCoord location, CubeCoord destination)
+{
+  BattleTile * tile = getHexTile(location);
+
+  BattleTile * destinationTile = getHexTile(destination);
+
+  if (destinationTile->getHexObject() == nullptr) {
+    HexObject * hexObject = tile->getHexObject();
+
+    tile->releaseHexObject();
+    destinationTile->setHexObject(hexObject);
+  }
 }

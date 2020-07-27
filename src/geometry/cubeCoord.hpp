@@ -14,12 +14,7 @@ Description: header function for CubeCoord
 
 class CubeCoord
 {
-    private:
-    int x;
-    int y;
-    int z;
-
-    public:
+  public:
 
     CubeCoord() : x(0), y(0), z(0) {}
     CubeCoord(int _q, int _r) : x(_q), y(-_q - _r), z(_r) {}
@@ -38,6 +33,12 @@ class CubeCoord
     int getR() const { return z; }
     
     void set(int _q, int _r);
+
+  protected:
+
+    int x;
+    int y;
+    int z;
 };
 
 

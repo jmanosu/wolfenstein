@@ -1,7 +1,9 @@
 #include "hexObject.hpp"
 
-HexObject::HexObject()
+HexObject::HexObject() :
+    _placed(false)
 {
+
 }
 
 HexObject::~HexObject()
@@ -29,6 +31,16 @@ void HexObject::setLocation(CubeCoord location)
 CubeCoord HexObject::getLocation()
 {
     return mLocation;
+}
+
+void HexObject::setPlaced(bool placed)
+{
+    _placed = placed;
+}
+
+bool HexObject::getPlaced()
+{
+    return _placed;
 }
 
 void HexObject::applyWeapon(Weapon * weapon)

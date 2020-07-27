@@ -9,7 +9,7 @@ HexCollectionEntry::HexCollectionEntry() :
 
 }
 
-HexCollectionEntry::HexCollectionEntry(BattleHex * battleHex, int distance) :
+HexCollectionEntry::HexCollectionEntry(BattleTile * battleHex, int distance) :
     mBattleHex(battleHex),
     mDistance(distance)
 {
@@ -21,12 +21,12 @@ HexCollectionEntry::~HexCollectionEntry()
 
 }
 
-void HexCollectionEntry::setBattleHex(BattleHex * battleHex)
+void HexCollectionEntry::setBattleHex(BattleTile * battleHex)
 {
     mBattleHex = battleHex;
 }
 
-BattleHex * HexCollectionEntry::getBattleHex()
+BattleTile * HexCollectionEntry::getBattleHex()
 {
     return mBattleHex;
 }
@@ -55,7 +55,7 @@ HexCollection::~HexCollection()
 
 }
 
-void HexCollection::addHex(CubeCoord location, HexCollectionEntry hexEntry)
+void HexCollection::addTile(CubeCoord location, HexCollectionEntry hexEntry)
 {
     mGrid[location] = hexEntry;
 }
@@ -69,7 +69,18 @@ void HexCollection::remove(CubeCoord location)
     }
 }
 
-HexCollectionEntry HexCollection::getHex(CubeCoord location)
+bool HexCollection::checkEntry(CubeCoord location)
+{
+    typename std::map<CubeCoord, HexCollectionEntry>::iterator it = mGrid.find(location);
+
+    if (it != mGrid.end()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+HexCollectionEntry HexCollection::getEntry(CubeCoord location)
 {
     typename std::map<CubeCoord, HexCollectionEntry>::iterator it = mGrid.find(location);
 
@@ -83,9 +94,9 @@ HexCollectionEntry HexCollection::getHex(CubeCoord location)
 void HexCollection::setHighlight(bool highlight)
 {
     for (typename std::pair<CubeCoord, HexCollectionEntry> pair : mGrid) {
-        BattleHex * hex = pair.second.getBattleHex();
-        if (hex != nullptr) {
-            hex->setHighlight(highlight);
+        BattleTile * tile = pair.second.getBattleHex();
+        if (tile != nullptr) {
+            tile->getHex()->setHighlight(highlight);
         }
     }
 }
@@ -108,7 +119,7 @@ CubeCoord HexCollection::getCenter()
 void HexCollection::drawPath(CubeCoord location)
 {
     CubeCoord currentLocation = location;
-
+/*
     while (currentLocation != mCenter) {
         HexCollectionEntry entry = getHex(currentLocation);
         if (entry.getBattleHex() != nullptr) {
@@ -132,5 +143,5 @@ void HexCollection::drawPath(CubeCoord location)
         } else {
             return;
         }
-    }
+    }*/
 }

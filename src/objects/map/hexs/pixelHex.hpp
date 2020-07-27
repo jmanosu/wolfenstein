@@ -295,12 +295,12 @@ template <class _Hex> void PixelHex<_Hex>::renderMidground()
 
         switch (mPixelMode) {
             case PixelMode::Standard:
-                if (neighbor != nullptr && neighbor->getRenderBorder() && neighbor->getLevel() == PixelHex::getLevel()) {
+                if (neighbor != nullptr && neighbor->getRenderBorder() && neighbor->getDepth() == PixelHex::getDepth()) {
                     renderBorder(i, neighbor->getBorderColor());
                 }
                 break;
             case PixelMode::Highlight:
-                if (neighbor != nullptr && neighbor->getRenderOverride() && neighbor->getLevel() == PixelHex::getLevel()) {
+                if (neighbor != nullptr && neighbor->getRenderOverride() && neighbor->getDepth() == PixelHex::getDepth()) {
                     renderBorder(i, neighbor->getBorderColor());
                 } else {
                     renderBorder(i, mBorderColor);
@@ -308,7 +308,7 @@ template <class _Hex> void PixelHex<_Hex>::renderMidground()
                 break;
             case PixelMode::GroupHighlight:
                 if (neighbor != nullptr) {
-                    if (neighbor->getRenderOverride() && neighbor->getLevel() == PixelHex::getLevel()) {
+                    if (neighbor->getRenderOverride() && neighbor->getDepth() == PixelHex::getDepth()) {
                         renderBorder(i, neighbor->getBorderColor());
                     } else if (!neighbor->getRenderGroupOverlay() || !mRenderGroup) {
                         renderBorder(i, mBorderColor);
@@ -328,10 +328,6 @@ template <class _Hex> void PixelHex<_Hex>::renderMidground()
 
     if (mRenderPathExit) {
         mPathTextures.at(mPathExit).render();
-    }
-
-    if (this->mHexObject != nullptr) {
-      this->mHexObject->render();
     }
 }
 

@@ -34,7 +34,11 @@ BattleMap * JsonUtils::loadBattleMap(std::string file, TextureCache * textureCac
 
             BattleHex * hex = hexs.at(hexIndex)->clone();
 
-            battleMap->addHex(location, hex);
+            BattleTile * newLocation = new BattleTile();
+            newLocation->setDepth(hex->getDepth());
+            newLocation->setHex(hex);
+
+            battleMap->setHexTile(location, newLocation->getDepth(), newLocation);
 
             columnNum++;
         }
@@ -46,10 +50,7 @@ BattleMap * JsonUtils::loadBattleMap(std::string file, TextureCache * textureCac
         delete hex;
     }
 
-    battleMap->initMapNeighbors();
-
     return battleMap;
-
 }
 
 BattleHex * decodeHex(pt::ptree::value_type * jsonHex, TextureCache * textureCache)
@@ -95,14 +96,13 @@ BattleHex * decodeHex(pt::ptree::value_type * jsonHex, TextureCache * textureCac
             std::string SkirtTexture = jsonHex->second.get<std::string>("SkirtTexture");
             newHex->setSkirtTexture(textureCache->getTexture(SkirtTexture));
 
-            int orientation = jsonHex->second.get<int>("orientation");
             int width = jsonHex->second.get<int>("width");
             int height = jsonHex->second.get<int>("height");
             int peakHeight = jsonHex->second.get<int>("peakHeight");
             int level = jsonHex->second.get<int>("level");
 
-            newHex->setDimensions((Orientation)orientation, width, height, peakHeight, level);
-
+            newHex->setDimensions(width, height, peakHeight);
+            newHex->setDepth(level);
 
             return newHex;
         }

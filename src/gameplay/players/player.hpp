@@ -12,7 +12,7 @@ Description: Player object header file
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <cmath>
-#include <map>
+#include <vector>
 
 #include "objects/map/hexObjects/units/unit.hpp"
 
@@ -23,10 +23,12 @@ class Player{
 
     void addUnit(Unit *);
     Unit * getUnit(unsigned int);
+    Unit * getUnplacedUnit();
+
+    bool setupFinished();
 
   private:
-
-    std::map<unsigned int, Unit *> mUnits;
+    std::vector<Unit *> _units;
 };
 
 #endif
