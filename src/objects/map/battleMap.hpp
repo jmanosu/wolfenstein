@@ -28,6 +28,8 @@ class BattleMap : public HexMap<BattleTile> {
 
     void addUnit(CubeCoord, Unit *);
     void setHexObject(CubeCoord, HexObject *);
+    void setHexObject(CubeCoord, Unit *);
+
     Unit * getUnit(ID);
 
     void applyWeapon(Weapon *, CubeCoord, CubeCoord);
@@ -39,7 +41,7 @@ class BattleMap : public HexMap<BattleTile> {
     HexCollection getHexReachableCollection(int, CubeCoord);
 
     HexObject * getHexObject(CubeCoord) { return nullptr; }
-    void moveHexObject(CubeCoord, CubeCoord);
+    bool moveHexObject(CubeCoord, CubeCoord);
 
   private:
     std::map<ID, Unit *> mHexUnits;

@@ -1,12 +1,16 @@
 #include "weapon.hpp"
 
-Weapon::Weapon()
+Weapon::Weapon(Weapon::WEAPONTYPE type)
 {
-    mName = "THIS IS A WEAPON";
-    mType = mortor;
+    _type = type;
 }
 
 Weapon::~Weapon()
 {
     
+}
+
+Weapon::WEAPONTYPE Weapon::getType()
+{
+    return _type;
 }

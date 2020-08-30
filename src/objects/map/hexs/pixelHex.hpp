@@ -18,11 +18,11 @@ template  <typename _Hex> class PixelHex : public Hex<_Hex> {
 
         ~PixelHex();
 
-        void setHexTexture(const Texture *);
-        void setHexOverlayTexture(const Texture *);
-        void setSkirtTexture(const Texture *);
+        void setHexTexture(Texture *);
+        void setHexOverlayTexture(Texture *);
+        void setSkirtTexture(Texture *);
         
-        void setBorderTexture(const Texture *, Direction);
+        void setBorderTexture(Texture *, Direction);
         void setPathTexture(const Texture &, Direction);
 
         void setHexOverlayColor(RGBA);
@@ -162,33 +162,33 @@ template <class _Hex> PixelHex<_Hex>::~PixelHex()
     }
 }
 
-template <class _Hex> void PixelHex<_Hex>::setHexTexture(const Texture * hexTexture)
+template <class _Hex> void PixelHex<_Hex>::setHexTexture(Texture * hexTexture)
 {
-    TextureUtils::copy(hexTexture, mHexTexture);
+    mHexTexture = hexTexture;
     if (mHexTexture != nullptr) {
       mHexTexture->parent(this);
     }
 }
 
-template <class _Hex> void PixelHex<_Hex>::setHexOverlayTexture(const Texture * hexOverlayTexture)
+template <class _Hex> void PixelHex<_Hex>::setHexOverlayTexture(Texture * hexOverlayTexture)
 {
-    TextureUtils::copy(hexOverlayTexture, mHexOverlayTexture);
+    mHexOverlayTexture = hexOverlayTexture;
     if (mHexOverlayTexture != nullptr) {
         mHexOverlayTexture->parent(this);
     }
 }
 
-template <class _Hex> void PixelHex<_Hex>::setSkirtTexture(const Texture * skirtTexture)
+template <class _Hex> void PixelHex<_Hex>::setSkirtTexture(Texture * skirtTexture)
 {
-    TextureUtils::copy(skirtTexture, mSkirtTexture);
+    mSkirtTexture = skirtTexture;
     if (mSkirtTexture != nullptr) {
       mSkirtTexture->parent(this);
     }
 }
 
-template <class _Hex> void PixelHex<_Hex>::setBorderTexture(const Texture * borderTexture, Direction direction)
+template <class _Hex> void PixelHex<_Hex>::setBorderTexture(Texture * borderTexture, Direction direction)
 {
-    TextureUtils::copy(borderTexture, mBorderTextures.at(direction));
+    mBorderTextures.at(direction) = borderTexture;
     if (mBorderTextures.at(direction) != nullptr) {
       mBorderTextures.at(direction)->parent(this);
     }
@@ -202,12 +202,16 @@ template <class _Hex> void PixelHex<_Hex>::setPathTexture(const Texture & textur
 
 template <class _Hex> void PixelHex<_Hex>::setHexOverlayColor(RGBA color)
 {
-    mHexOverlayTexture->setColor(color.r, color.g, color.b, color.a);
+    if (mHexOverlayTexture != nullptr) {
+        mHexOverlayTexture->setColor(color.r, color.g, color.b, color.a);
+    }
 }
 
 template <class _Hex> void PixelHex<_Hex>::setHexOverlayColor(int r, int g, int b, int a)
 {
-    mHexOverlayTexture->setColor(r, g, b, a);
+    if (mHexOverlayTexture != nullptr) {
+        mHexOverlayTexture->setColor(r, g, b, a);
+    }
 }
 
 template <class _Hex> void PixelHex<_Hex>::setBorderColor(RGBA color)

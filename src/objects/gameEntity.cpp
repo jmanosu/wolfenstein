@@ -19,6 +19,21 @@ GameEntity::GameEntity(float x, float y)
     mParent = nullptr;
 }
 
+GameEntity::GameEntity(const GameEntity & entity) : GameEntity(0,0)
+{
+    mPos.x = entity.mPos.x;
+    mPos.y = entity.mPos.y;
+
+    mScale.x = entity.mScale.x;
+    mScale.y = entity.mScale.y;
+
+    mRotation = entity.mRotation;
+
+    mActive = entity.mActive;
+
+    mParent = entity.mParent;
+}
+
 GameEntity::~GameEntity()
 {
 }
@@ -28,7 +43,7 @@ int GameEntity::id() const
     return mId;
 }
 
-void GameEntity::pos(GVector pos)
+void GameEntity::pos(const GVector pos)
 {
     mPos = pos;
 }

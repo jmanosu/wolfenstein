@@ -19,6 +19,26 @@ AnimatedTexture::AnimatedTexture() : Texture()
     mWrapMode = once;    
 }
 
+AnimatedTexture::AnimatedTexture(const AnimatedTexture & texture) : Texture(texture)
+{
+    mTimer = Timer::instance();
+
+    mStartX = texture.mStartX;
+    mStartY = texture.mStartY;
+
+    mFrameCount = texture.mFrameCount;
+    mAnimationSpeed = texture.mAnimationSpeed;
+    mTimePerFrame = texture.mTimePerFrame;
+    mAnimationTimer = texture.mAnimationTimer;
+
+    mAnimationDirection = texture.mAnimationDirection;
+
+    mAnimationDone = texture.mAnimationDone;
+
+    mWrapMode = texture.mWrapMode;    
+}
+
+
 AnimatedTexture::AnimatedTexture(std::string filename, int x, int y, int width, int height, int frameCount, float animationSpeed, ANIM_DIR animationDir)
     : Texture(filename, x, y, width, height)
 {

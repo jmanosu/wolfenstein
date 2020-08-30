@@ -31,6 +31,29 @@ void BattleTile::setNeighbor(HexSide side, BattleTile * tile)
     }
 }
 
+void BattleTile::setHexObject(HexObject * hexObject)
+{
+    HexTile::setHexObject(hexObject);
+    _hexObjectType = HexObjectType::hexObject;
+}
+
+void BattleTile::setHexObject(Unit * unit)
+{
+    HexTile::setHexObject(unit);
+    _hexObjectType = HexObjectType::unit;
+}
+
+void BattleTile::releaseHexObject()
+{
+    HexTile::releaseHexObject();
+    _hexObjectType = HexObjectType::none;
+}
+
+BattleTile::HexObjectType BattleTile::getHexObjectType()
+{
+    return _hexObjectType;
+}
+
 BattleTile * BattleTile::getNeighbor(HexSide side)
 {
     if (side < 0  || side > 5) {
@@ -47,5 +70,9 @@ bool BattleTile::getVisted()
 
 Unit * BattleTile::getUnit()
 {
-    return static_cast<Unit *>(_hexObject);
+    if (_hexObjectType == HexObjectType::unit) {
+        return static_cast<Unit *>(_hexObject);
+    } else {
+        return nullptr;
+    }
 }

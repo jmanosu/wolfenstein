@@ -8,6 +8,8 @@
 
 #include "geometry/cubeCoord.hpp"
 
+#include "objects/map/hexs/battleHex.hpp"
+
 class HexObject : public GameEntity {
     public:
         HexObject();
@@ -24,6 +26,9 @@ class HexObject : public GameEntity {
 
         virtual void applyWeapon(Weapon *);
 
+        void setHex(BattleHex *);
+        BattleHex * getHex();
+
     private:
 
     protected:
@@ -31,6 +36,8 @@ class HexObject : public GameEntity {
         CubeCoord mLocation;
 
         bool _placed;
+
+        BattleHex * _hex;
 
 };
 

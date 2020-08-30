@@ -61,6 +61,17 @@ Texture * TextureCache::getTexture(std::string name)
   }
 }
 
+Texture * TextureCache::generateTexture(std::string name)
+{ 
+  std::map<std::string, Texture *>::iterator it = mTextures.find(name);
+
+  if (it != mTextures.end()) {
+    return new Texture(*(it->second));
+  } else {
+    return nullptr;
+  }
+}
+
 void TextureCache::stashAnimatedTexture(std::string name, AnimatedTexture * texture)
 {
   std::map<std::string, AnimatedTexture *>::iterator it = mAnimatedTexture.find(name);
@@ -78,6 +89,18 @@ AnimatedTexture * TextureCache::getAnimatedTexture(std::string name)
 
   if (it != mAnimatedTexture.end()) {
     return it->second;
+  } else {
+    return nullptr;
+  }
+
+}
+
+AnimatedTexture * TextureCache::generateAnimatedTexture(std::string name)
+{
+  std::map<std::string, AnimatedTexture *>::iterator it = mAnimatedTexture.find(name);
+
+  if (it != mAnimatedTexture.end()) {
+    return new AnimatedTexture(*(it->second));
   } else {
     return nullptr;
   }

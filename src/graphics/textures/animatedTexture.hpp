@@ -31,6 +31,7 @@ class AnimatedTexture : public Texture {
 
     public:
         AnimatedTexture();
+        AnimatedTexture(const AnimatedTexture &);
         AnimatedTexture(std::string filename, int x, int y, int width, int height, int frameCount, float animationSpeed, ANIM_DIR animationDir);
         ~AnimatedTexture();
 

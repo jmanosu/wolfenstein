@@ -33,6 +33,13 @@ void BattleMap::setHexObject(CubeCoord location, HexObject * hexObject)
   tile->setHexObject(hexObject);
 }
 
+void BattleMap::setHexObject(CubeCoord location, Unit * unit)
+{
+  BattleTile * tile = getHexTile(location);
+  tile->releaseHexObject();
+  tile->setHexObject(unit);
+}
+
 Unit * BattleMap::getUnit(ID id)
 {
   std::map<ID, Unit *>::iterator it = mHexUnits.find(id);
@@ -47,16 +54,7 @@ Unit * BattleMap::getUnit(ID id)
 
 void BattleMap::applyWeapon(Weapon * weapon, CubeCoord origin, CubeCoord target)
 {
-  switch (weapon->getType()) {
-    case beam:
-      break;
-    case projectile:
-      break;
-    case mortor:
-      break;
-    default:
-      break;
-    }
+  
 }
 
 template<typename Valid, typename Modify> void BattleMap::modifyHexCoordRange(int range, CubeCoord location, Valid valid, Modify modify)
@@ -133,6 +131,8 @@ HexCollection BattleMap::getHexRangeCollection(int range, CubeCoord location)
 {
   HexCollection hexCollection;
 
+  hexCollection.setCenter(location);
+
   modifyHexCoordRange(range, location,
     [&](BattleTile *, int distance) {
       return true;
@@ -165,16 +165,39 @@ HexCollection BattleMap::getHexReachableCollection(int range, CubeCoord location
   return hexCollection;
 }
 
-void BattleMap::moveHexObject(CubeCoord location, CubeCoord destination)
+bool BattleMap::moveHexObject(CubeCoord location, CubeCoord destination)
 {
   BattleTile * tile = getHexTile(location);
 
   BattleTile * destinationTile = getHexTile(destination);
 
   if (destinationTile->getHexObject() == nullptr) {
-    HexObject * hexObject = tile->getHexObject();
 
-    tile->releaseHexObject();
-    destinationTile->setHexObject(hexObject);
+    switch (tile->getHexObjectType())
+    {
+      case BattleTile::HexObjectType::hexObject:
+        {
+          HexObject * hexObject = tile->getHexObject();
+
+          tile->releaseHexObject();
+          destinationTile->setHexObject(hexObject);
+          break;
+        }
+      case BattleTile::HexObjectType::unit:
+        {
+          Unit * unit = tile->getUnit();
+
+          tile->releaseHexObject();
+          destinationTile->setHexObject(unit);
+
+          break;
+        }
+      default:
+        break;
+    }
+
+    return true;
+  } else {
+    return false;
   }
 }

@@ -32,6 +32,13 @@ class Battle : GameEntity {
 
         void setMode(BATTLEMODE);
 
+        void setSelectedTile(BattleTile *);
+
+        void setSelectedHexObject(HexObject *);
+        void setSelectedUnit(Unit *);
+
+        void handleSelectedTile(BattleTile *);
+
     private:
 
         ID tempMechID;
@@ -48,6 +55,10 @@ class Battle : GameEntity {
         TexturePath  mPathTexture;
         bool texturePathToggle;
 
+        HexCollection _selectedUnitRegion;
+
+        HexCollection _startRegion;
+
         /* for real member varaibles */
         BattleMap * mMap;
 
@@ -56,9 +67,12 @@ class Battle : GameEntity {
 
         BATTLEMODE _mode;
 
-        HexCollection _startRegion;
+        HexCollection _highlightedRegion;
 
+        BattleTile * _selectedTile;
+        BattleTile * _previousSelectedTile;
         Unit * _selectedUnit;
+        HexObject * _selectedHexObject;
 };
 
 #endif

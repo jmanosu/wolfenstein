@@ -3,9 +3,13 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
+#include "objects/map/hexs/BattleHexs/landHex.hpp"
+#include "objects/map/hexs/BattleHexs/waterHex.hpp"
+
+
 namespace pt = boost::property_tree;
 
-BattleHex * decodeHex(pt::ptree::value_type *, TextureCache *);
+BattleHex * generateBattleHex(int);
 
 BattleMap * JsonUtils::loadBattleMap(std::string file, TextureCache * textureCache)
 {
@@ -14,12 +18,6 @@ BattleMap * JsonUtils::loadBattleMap(std::string file, TextureCache * textureCac
 
     pt::ptree tree;
     pt::read_json(fullPath, tree);
-
-    std::vector<BattleHex *> hexs;
-
-    for (pt::ptree::value_type & hex : tree.get_child("hexs")) {
-        hexs.push_back(decodeHex(&hex, textureCache));
-    }
 
     int rowNum = 0;
     int columnNum = 0;
@@ -30,15 +28,18 @@ BattleMap * JsonUtils::loadBattleMap(std::string file, TextureCache * textureCac
         for (pt::ptree::value_type & jsonHexIndex : row.second) {
             CubeCoord location = axialToCubeOddVertical(rowNum, columnNum);
 
-            int hexIndex = jsonHexIndex.second.get<int>("");
+            int type = jsonHexIndex.second.get<int>("");
 
-            BattleHex * hex = hexs.at(hexIndex)->clone();
+            BattleHex * newHex = generateBattleHex(type);
 
-            BattleTile * newLocation = new BattleTile();
-            newLocation->setDepth(hex->getDepth());
-            newLocation->setHex(hex);
+            if (newHex != nullptr) {
+                BattleTile * newLocation = new BattleTile();
 
-            battleMap->setHexTile(location, newLocation->getDepth(), newLocation);
+                newLocation->setDepth(newHex->getDepth());
+                newLocation->setHex(newHex);
+
+                battleMap->setHexTile(location, newLocation->getDepth(), newLocation);
+            }
 
             columnNum++;
         }
@@ -46,69 +47,70 @@ BattleMap * JsonUtils::loadBattleMap(std::string file, TextureCache * textureCac
         columnNum = 0;
     }
 
-    for (BattleHex * hex : hexs) {
-        delete hex;
+    rowNum = 0;
+    columnNum = 0;
+
+    for (pt::ptree::value_type & row : tree.get_child("topography")) {
+        for (pt::ptree::value_type & jsonHexIndex : row.second) {
+            CubeCoord location = axialToCubeOddVertical(rowNum, columnNum);
+
+            int depth = jsonHexIndex.second.get<int>("");
+
+            BattleTile * tile = battleMap->getHexTile(location);
+
+            if (tile != nullptr) {
+                battleMap->setHexTileDepth(depth, tile);
+            }
+
+            columnNum++;
+        }
+        rowNum++;
+        columnNum = 0;
     }
 
+    
     return battleMap;
 }
 
-BattleHex * decodeHex(pt::ptree::value_type * jsonHex, TextureCache * textureCache)
+BattleHex * generateBattleHex(int id)
 {
-    int type = jsonHex->second.get<int>("type", -1);
-
-    switch (type)
-    {
-    case 0:
-        {
-            BattleHex * newHex = new BattleHex();
-
-            std::string NorthWestHighlight = jsonHex->second.get<std::string>("HighlightNorthWest");
-            newHex->setBorderTexture(textureCache->getTexture(NorthWestHighlight), NorthWest);
-
-            std::string NorthHighlight = jsonHex->second.get<std::string>("NorthHighlight");
-            newHex->setBorderTexture(textureCache->getTexture(NorthHighlight), North);
-
-            std::string NorthEastHighlight = jsonHex->second.get<std::string>("NorthEastHighlight");
-            newHex->setBorderTexture(textureCache->getTexture(NorthEastHighlight), NorthEast);
-
-            std::string SouthEastHighlight = jsonHex->second.get<std::string>("SouthEastHighlight");
-            newHex->setBorderTexture(textureCache->getTexture(SouthEastHighlight), SouthEast);
-
-            std::string SouthHighlight = jsonHex->second.get<std::string>("SouthHighlight");
-            newHex->setBorderTexture(textureCache->getTexture(SouthHighlight), South);
-
-            std::string SouthWestHighlight = jsonHex->second.get<std::string>("SouthWestHighlight");
-            newHex->setBorderTexture(textureCache->getTexture(SouthWestHighlight), SouthWest);
-
-            int i = 0;
-            for (pt::ptree::value_type & pathTexture : jsonHex->second.get_child("PathTextures")) {
-                newHex->setPathTexture(*(textureCache->getTexture(pathTexture.second.data())), (Direction)i);
-                i++;
+    switch (id) {
+        case 0:
+            {
+                WaterHex * newHex = new WaterHex();
+                return newHex;
             }
-
-            std::string TileTexture = jsonHex->second.get<std::string>("TileTexture");
-            newHex->setHexTexture(textureCache->getTexture(TileTexture));
-            
-            std::string OverlayTexture = jsonHex->second.get<std::string>("OverlayTexture");
-            newHex->setHexOverlayTexture(textureCache->getTexture(OverlayTexture));
-
-            std::string SkirtTexture = jsonHex->second.get<std::string>("SkirtTexture");
-            newHex->setSkirtTexture(textureCache->getTexture(SkirtTexture));
-
-            int width = jsonHex->second.get<int>("width");
-            int height = jsonHex->second.get<int>("height");
-            int peakHeight = jsonHex->second.get<int>("peakHeight");
-            int level = jsonHex->second.get<int>("level");
-
-            newHex->setDimensions(width, height, peakHeight);
-            newHex->setDepth(level);
-
-            return newHex;
-        }
-        break;
-    default:
-        return nullptr;
-        break;
+            break;
+        case 1:
+            {
+                LandHex * newHex = new LandHex();
+                newHex->setType(LandHex::LandHexType::grass);
+                return newHex;
+            }
+            break;
+        case 2:
+            {
+                LandHex * newHex = new LandHex();
+                newHex->setType(LandHex::LandHexType::desert);
+                return newHex;
+            }
+            break;
+        case 3:
+            {
+                LandHex * newHex = new LandHex();
+                newHex->setType(LandHex::LandHexType::snow);
+                return newHex;
+            }
+            break;
+        case 4:
+            {
+                return nullptr;
+            }
+            break;
+        default:
+            {
+                return nullptr;
+            }
+            break;
     }
 }

@@ -17,9 +17,9 @@ template <typename Hex, typename HexObject> class HexTile : public GameEntity {
         void setLocation(CubeCoord location, int depth = 0);
         void setDepth(int);
         void setHex(Hex *);
-        void setHexObject(HexObject *);
+        virtual void setHexObject(HexObject *);
 
-        void releaseHexObject();
+        virtual void releaseHexObject();
 
         int getDepth();
 
@@ -103,6 +103,10 @@ template <class Hex, class HexObject> void HexTile<Hex, HexObject>::setHex(Hex *
     _hex = hex;
     _hex->parent(this);
     _hex->setLocation(_location, _depth);
+
+    if (_hexObject != nullptr) {
+        _hexObject->setHex(hex);
+    }
 }
 
 template <class Hex, class HexObject> void HexTile<Hex, HexObject>::setHexObject(HexObject * hexObject)
@@ -112,6 +116,7 @@ template <class Hex, class HexObject> void HexTile<Hex, HexObject>::setHexObject
         _hexObject->parent(this);
         _hexObject->setLocation(_location);
         _hexObject->setPlaced(true);
+        _hexObject->setHex(_hex);
     }
 }
 

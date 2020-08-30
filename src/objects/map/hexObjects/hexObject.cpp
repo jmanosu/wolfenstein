@@ -47,3 +47,13 @@ void HexObject::applyWeapon(Weapon * weapon)
 {
     std::cout << "in HEXOBJECT APPLYWEAPON" << std::endl;
 }
+
+void HexObject::setHex(BattleHex * hex)
+{
+    _hex = hex;
+}
+
+BattleHex * HexObject::getHex()
+{
+    return _hex;
+}

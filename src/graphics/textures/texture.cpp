@@ -11,6 +11,30 @@ Texture::Texture() : GameEntity()
     mAlpha = 255;
 }
 
+Texture::Texture(const Texture & texture) : GameEntity(texture)
+{
+    mGraphics = texture.mGraphics;
+    mTexture = texture.mTexture;
+
+    mWidth = texture.mWidth;
+    mHeight = texture.mHeight;
+
+    mRenderRect.x = texture.mRenderRect.x;
+    mRenderRect.y = texture.mRenderRect.y;
+    mRenderRect.w = texture.mRenderRect.w;
+    mRenderRect.h = texture.mRenderRect.h;
+
+    mClipRect.x = texture.mClipRect.x;
+    mClipRect.y = texture.mClipRect.y;
+    mClipRect.w = texture.mClipRect.w;
+    mClipRect.h = texture.mClipRect.h;
+
+    mRed = texture.mRed;
+    mGreen = texture.mGreen;
+    mBlue = texture.mBlue;
+    mAlpha = texture.mAlpha;
+}
+
 Texture::Texture(std::string path) : Texture()
 {
     mGraphics = Graphics::instance();
@@ -125,6 +149,12 @@ void Texture::update()
 {
 
 }
+
+void Texture::operator = (const Texture & texture)
+{
+//    Texture(texture);
+}
+
 
 void TextureUtils::copy(const Texture * & source, Texture * & destination)
 {

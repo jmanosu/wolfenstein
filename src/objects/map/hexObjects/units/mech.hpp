@@ -20,6 +20,13 @@ class Mech : public Unit {
     private:
 
         AnimatedTexture * mIdleTexture;
+
+        AnimatedTexture * _defaultTexture;
+        
+        Texture * _submergedTexture;
+
+        Texture * _defaultHighlightTexture;
+        Texture * _submergedHighlightTexture;
 };
 
 #endif

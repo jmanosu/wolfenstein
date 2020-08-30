@@ -20,6 +20,7 @@ Description: Player object header file
 class Texture : public GameEntity {
     public:
         Texture();
+        Texture(const Texture &);
         Texture(std::string path);
         Texture(std::string path, int x, int y, int width, int height);
         Texture(std::string text, std::string fontPath, int size, SDL_Color color = {.r = 0, .g = 0, .b = 0, .a = 0});
@@ -36,6 +37,8 @@ class Texture : public GameEntity {
         void render();
         void render(GVector);
         void render(int, int, int, int);
+
+        void operator = (const Texture &);
 
     protected:
         SDL_Texture * mTexture;

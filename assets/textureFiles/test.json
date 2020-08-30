@@ -80,52 +80,52 @@
         "height" : 85
     },
     {
-        "label" : "HighlightHex1",
+        "label" : "HighlightHex0",
         "file" : "hexFinalTextures/HighlightTexture.png",
         "x" : 0,
         "y" : 0,
         "width" : 43,
-        "height" : 85
+        "height" : 33
     },
     {
-        "label" : "HighlightHex2",
+        "label" : "HighlightHex1",
         "file" : "hexFinalTextures/HighlightTexture.png",
         "x" : 43,
         "y" : 0,
         "width" : 43,
-        "height" : 85
+        "height" : 33
     },
     {
-        "label" : "HighlightHex3",
+        "label" : "HighlightHex2",
         "file" : "hexFinalTextures/HighlightTexture.png",
         "x" : 86,
         "y" : 0,
         "width" : 43,
-        "height" : 85
+        "height" : 33
     },
     {
-        "label" : "HighlightHex4",
+        "label" : "HighlightHex3",
         "file" : "hexFinalTextures/HighlightTexture.png",
         "x" : 129,
         "y" : 0,
         "width" : 43,
-        "height" : 85
+        "height" : 33
     },
     {
-        "label" : "HighlightHex5",
+        "label" : "HighlightHex4",
         "file" : "hexFinalTextures/HighlightTexture.png",
         "x" : 172,
         "y" : 0,
         "width" : 43,
-        "height" : 85
+        "height" : 33
     },
     {
-        "label" : "HighlightHex6",
+        "label" : "HighlightHex5",
         "file" : "hexFinalTextures/HighlightTexture.png",
         "x" : 215,
         "y" : 0,
         "width" : 43,
-        "height" : 85
+        "height" : 33
     },
     {
         "label" : "HexOverlay",
@@ -141,10 +141,10 @@
         "file" : "hexTextures/WaterHexAnimated.png",
         "x" : 0,
         "y" : 0,
-        "width" : 86,
+        "width" : 43,
         "height" : 33,
         "frames" : 2,
-        "speed" : 1000,
+        "speed" : 250,
         "direction" : 0
     },
     {

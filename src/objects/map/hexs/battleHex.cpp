@@ -5,6 +5,7 @@ BattleHex::BattleHex() : PixelHex()
   mFocusColor = { .r = 0, .g = 255, .b = 255, .a = 255};
   mHighlightColor = { .r = 0, .g = 255, .b = 0, .a =255};
   mHighlight = false;
+  _type = BattleHexType::land;
 }
 
 BattleHex::BattleHex(const BattleHex & hex) : PixelHex(hex)
@@ -12,6 +13,7 @@ BattleHex::BattleHex(const BattleHex & hex) : PixelHex(hex)
   mFocusColor = { .r = 0, .g = 255, .b = 255, .a = 255};
   mHighlightColor = { .r = 0, .g = 255, .b = 0, .a =255};
   mHighlight = false;
+  _type = hex._type;
 }
 
 
@@ -57,4 +59,14 @@ void BattleHex::setHighlight(bool highlight)
   } else {
     setPixelMode(PixelMode::Standard);
   }
+}
+
+void BattleHex::setType(BattleHexType type)
+{
+  _type = type;
+}
+
+BattleHex::BattleHexType BattleHex::getType()
+{
+  return _type;
 }

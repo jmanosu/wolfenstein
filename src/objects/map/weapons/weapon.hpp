@@ -3,23 +3,25 @@
 
 #include <iostream>
 
-enum WEAPONTYPE {
-    beam = 0,
-    projectile,
-    mortor
-};
 
 class Weapon {
     public:
-        Weapon();
+        enum WEAPONTYPE {
+            beam = 0,
+            projectile,
+            mortor
+        };
+
+        Weapon(WEAPONTYPE);
         ~Weapon();
 
-        WEAPONTYPE getType() { return mType; }
-        std::string getName() { return mName; }
-    private:
-        WEAPONTYPE mType;
-        std::string mName;
+        WEAPONTYPE getType();
 
+//        void previewEffect();
+//       void executeEffect();
+        
+    private:
+        WEAPONTYPE _type;
 };
 
 #endif

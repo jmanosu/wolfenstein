@@ -14,7 +14,8 @@
 Battle::Battle() :
     _currentPlayer(nullptr),
 
-    _selectedUnit(nullptr)
+    _selectedUnit(nullptr),
+    _selectedHexObject(nullptr)
 {
 
     TextureCache * textureCache = TextureCache::instance();
@@ -63,6 +64,8 @@ Battle::Battle() :
     texturePathToggle = false;
 
     /* for real stuff */
+    _selectedTile = nullptr;
+    _previousSelectedTile = nullptr;
 
     _startRegion = mMap->getHexRangeCollection(3, CubeCoord(0,0));
 
@@ -81,9 +84,6 @@ Battle::~Battle() {
 void Battle::render()
 {
     mMap->render();
-    SDL_SetRenderDrawColor(Graphics::instance()->getRenderer(), 200, 200, 74, 255);
-    tempButton->render();
-    SDL_SetRenderDrawColor(Graphics::instance()->getRenderer(), 5, 42, 74, 255);
     mPathTexture.render();
 }
 
@@ -93,42 +93,9 @@ void Battle::update()
 
     InputManager * inputManager = InputManager::instance();
 
-    switch (_mode)
-    {
-        case setup:
-            {
-                BattleTile * selected = mMap->getClickedTile();
-
-                if (selected != nullptr && _startRegion.checkEntry(selected->getLocation()) && _selectedUnit != nullptr && !_selectedUnit->getPlaced()) {
-                    std::cout << "valid start" << std::endl;
-                    mMap->setHexObject(selected->getLocation(), _selectedUnit);
-                    _selectedUnit = nullptr;
-
-                    // delete later
-                    _selectedUnit = _currentPlayer->getUnplacedUnit();
-
-                    if (_selectedUnit == nullptr) {
-                        setMode(battle);
-                    }
-                }
-            }
-            break;
-        case battle:
-            {
-                BattleTile * selected = mMap->getClickedTile();
-
-                if (selected != nullptr && _selectedUnit == nullptr) {
-                    _selectedUnit = selected->getUnit();
-                } else if (selected != nullptr && _selectedUnit != nullptr) {
-                    if (_selectedUnit->getLocation() != selected->getLocation()) {
-                        mMap->moveHexObject(_selectedUnit->getLocation(), selected->getLocation());
-                    }
-                }
-            }
-        default:
-            break;
+    if (inputManager->mouseRelease(SDL_BUTTON(SDL_BUTTON_LEFT))) {
+        handleSelectedTile(mMap->getClickedTile());
     }
-
 }
 
 void Battle::addPlayer(Player * player)
@@ -163,4 +130,108 @@ void Battle::setMode(BATTLEMODE mode)
     }
 
     _mode = mode;
+}
+
+void Battle::setSelectedTile(BattleTile * tile)
+{
+    setSelectedUnit(nullptr);
+    setSelectedHexObject(nullptr);
+
+    _previousSelectedTile = _selectedTile;
+    _selectedTile = tile;
+
+    if (_selectedTile != nullptr) {
+        switch (_selectedTile->getHexObjectType())
+        {
+            case BattleTile::HexObjectType::hexObject:
+                {  
+                    HexObject * hexObject = _selectedTile->getHexObject();
+                    setSelectedHexObject(hexObject);
+                }
+                break;
+            case BattleTile::HexObjectType::unit:
+                {
+                    Unit * unit = _selectedTile->getUnit();
+                    setSelectedUnit(unit);
+                }
+                break;
+            case BattleTile::HexObjectType::none:
+                {
+
+                }
+                break;        
+            default:
+                break;
+        }
+    }
+}
+
+void Battle::setSelectedHexObject(HexObject * hexObject)
+{
+    _selectedHexObject = hexObject;
+}
+
+void Battle::setSelectedUnit(Unit * unit)
+{
+    _selectedUnit = unit;
+
+    _highlightedRegion.setHighlight(false);
+
+
+    if (_selectedUnit != nullptr) {
+        if (_selectedUnit->getMoveCount() > 0) {
+            _highlightedRegion = mMap->getHexRangeCollection(_selectedUnit->getMoveRange(), _selectedUnit->getLocation());
+            _highlightedRegion.setHighlight(true);
+        }
+    }
+}
+
+void Battle::handleSelectedTile(BattleTile * tile)
+{
+    switch (_mode) {
+        case setup:
+            {
+                if (tile != nullptr) {
+                    if (_startRegion.checkEntry(tile->getLocation()) && _selectedUnit != nullptr && !_selectedUnit->getPlaced()) {
+                        if (tile->getUnit() != nullptr) {
+                            std::cout << "swaping" << std::endl;
+                            Unit * selectedUnit = tile->getUnit();
+                            selectedUnit->setPlaced(false);
+
+                            tile->releaseHexObject();
+                            tile->setHexObject(_selectedUnit);
+
+                            _selectedUnit = selectedUnit;
+                        } else {
+                            std::cout << "valid start" << std::endl;
+
+                            mMap->setHexObject(tile->getLocation(), _selectedUnit);
+
+                            // delete later
+                            _selectedUnit = _currentPlayer->getUnplacedUnit();
+
+                            if (_selectedUnit == nullptr) {
+                                setMode(battle);
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        case battle:
+            {
+                if (_selectedTile != nullptr) {
+                    if (_selectedUnit != nullptr && tile != nullptr && _selectedUnit->isMovable() && _highlightedRegion.checkEntry(tile->getLocation()) && _selectedUnit->getLocation() != tile->getLocation()) {
+                        mMap->moveHexObject(_selectedUnit->getLocation(), tile->getLocation());
+                        _selectedUnit->setMoveCount(_selectedUnit->getMoveCount() - 1);
+                    }
+                }
+
+                if (tile != nullptr) {
+                    setSelectedTile(tile);
+                }
+            }
+        default:
+            break;
+    }
 }

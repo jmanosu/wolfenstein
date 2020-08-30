@@ -23,11 +23,12 @@ class GameEntity {
 
     public:
         GameEntity(float x = 0.0f, float y = 0.0f);
+        GameEntity(const GameEntity &);
         ~GameEntity();
 
         int id() const;
 
-        void pos(GVector pos);
+        void pos(const GVector pos);
         GVector pos(SPACE space = world);
 
         void scale(GVector scale);

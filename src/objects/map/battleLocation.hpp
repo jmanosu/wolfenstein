@@ -13,8 +13,21 @@ class BattleTile : public HexTile<BattleHex, HexObject> {
         BattleTile();
         ~BattleTile();
 
+        enum class HexObjectType {
+            none,
+            hexObject,
+            unit
+        };
+
         void setVisited(bool);
         void setNeighbor(HexSide, BattleTile *);
+
+        void setHexObject(HexObject *);
+        void setHexObject(Unit *);
+
+        void releaseHexObject();
+
+        BattleTile::HexObjectType getHexObjectType();
 
         BattleTile * getNeighbor(HexSide);
 
@@ -26,6 +39,8 @@ class BattleTile : public HexTile<BattleHex, HexObject> {
         bool _visited;
 
         std::vector<BattleTile *> _neighbors;
+
+        HexObjectType _hexObjectType;
 };
 
 #endif

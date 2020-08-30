@@ -1,14 +1,27 @@
 #include "mech.hpp"
 
-Mech::Mech() :
-    mIdleTexture(nullptr)
+Mech::Mech() : Unit(),
+    mIdleTexture(nullptr),
+
+    _defaultTexture(nullptr),
+    _submergedTexture(nullptr),
+
+    _defaultHighlightTexture(nullptr),
+    _submergedHighlightTexture(nullptr)
 {
-    AnimatedTexture temp("hexObjects/Mech2Animated.png", 0, 0, 25, 27, 4, 500, AnimatedTexture::horizontal);
-    temp.setColor(255,0,0,255);
-    setIdleTexture(&temp);
-    this->pos(GVector(3,-7));
-    mWeapon = new Weapon();
-    mHealth = 5;
+    _defaultTexture = new AnimatedTexture("hexObjects/Mech2Animated.png", 0, 0, 25, 27, 4, 500, AnimatedTexture::horizontal);
+    _defaultTexture->parent(this);
+    _defaultTexture->pos(GVector(3,-7));
+    
+    _submergedTexture = new Texture("hexObjects/Mech2Animated.png", 0, 27, 25, 27);
+    _submergedTexture->parent(this);
+    _submergedTexture->pos(GVector(3,0));
+
+    _defaultGameStats._health = 5;
+    _defaultGameStats._moveRange = 3;
+    _defaultGameStats._moveCount = 3;
+
+    reset();
 }
 
 Mech::~Mech()
@@ -18,15 +31,17 @@ Mech::~Mech()
 
 void Mech::update() 
 {
-    if (mIdleTexture != nullptr) {
-        mIdleTexture->update();
+    if (_hex == nullptr || _hex->getType() != BattleHex::BattleHexType::water) {
+        _defaultTexture->update();
     }
 }
 
 void Mech::render()
 {
-    if (mIdleTexture != nullptr) {
-        mIdleTexture->render();
+    if (_hex != nullptr && _hex->getType() == BattleHex::BattleHexType::water) {
+        _submergedTexture->render();
+    } else {
+        _defaultTexture->render();
     }
 }
 
@@ -39,10 +54,8 @@ void Mech::setIdleTexture(const AnimatedTexture * idleTexture)
 
 void Mech::applyWeapon(Weapon * weapon)
 {
-    std::cout << weapon->getName() << std::endl;
-    
-    if (mHealth > 0) {
-        mHealth--;
+    if (_currentGameStats._health > 0) {
+        _currentGameStats._health--;
         std::cout << "big OUCH!" << std::endl;
     } else {
         std::cout << "you sunk my battleship" << std::endl;

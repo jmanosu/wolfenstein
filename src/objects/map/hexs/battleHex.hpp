@@ -11,6 +11,11 @@ class BattleHex : public PixelHex<BattleHex> {
 
         ~BattleHex();
 
+        enum BattleHexType {
+            land = 0,
+            water
+        };
+
         BattleHex * clone();
         
         void applyWeapon(Weapon *);
@@ -18,11 +23,17 @@ class BattleHex : public PixelHex<BattleHex> {
         void update();
 
         void setHighlight(bool);
+
+        void setType(BattleHexType type);
+
+        BattleHexType getType();
     private:
         RGBA mFocusColor;
         RGBA mHighlightColor;
 
         bool mHighlight;
+
+        BattleHexType _type;
 };
 
 #endif
